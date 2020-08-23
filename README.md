@@ -1,3 +1,7 @@
+## RecruitOn Web App
+
+Mini app built on NestJS to process data from uploaded excel files
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
