@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/465dd91009.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+    <title>RecruitOn - Greeting</title>
+    <style>
+
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+            background: #e6e6e6;
+            font-family: 'Barlow Condensed', sans-serif;
+        }
+
+        div.dv-lvl-0.recruit-on-header {
+            max-width: 1920px;
+            width: 100%;
+            height: 100px;
+            background: #252fc2;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            box-shadow: 0px 0px 10px 0px #000;
+        }
+
+        div.dv-lvl-0.recruiter-on-body {
+            max-width: 1920px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        div.dv-lvl-1.recruit-on-logo {
+            font-size: 3em;
+            margin-left: 30px;
+            color: #e6e6e6;
+        }
+
+        p.par-lvl-2.logo-paragraph {
+            padding: 0;
+            margin: 0;
+            padding-bottom: .2em;
+            letter-spacing: .4em;
+        }
+
+        div.dv-lvl-1.greeting-panel-container {
+            width: 400px;
+            margin: 30px 30px;
+            height: 400px;
+        }
+
+        div.dv-lvl-2.greeting-panel-header {
+            padding: .8em;
+            padding-bottom: 0;
+        }
+
+        div.dv-lvl-2.greeting-panel-header h1 span {
+            font-weight: normal;
+        }
+
+        div.dv-lvl-2.greeting-panel-content {
+            padding: .8em;
+            padding-bottom: 0;
+            font-size: 19px;
+        }
+
+        div.dv-lvl-1.greeting-panel-container form {
+            padding: .8em;
+        }
+
+        form .name {
+            height: 1.5em;
+            padding: .5em;
+            border: none;
+            box-shadow: 0px 0px 3px 0px #4f5291;
+            outline: none;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+        }
+
+        form .button {
+            margin-top: 10px;
+            width: 80px;
+            padding: .7em;
+            background: #252fc2;
+            color: #e6e6e6;
+            border: none;
+            box-shadow: 0px 0px 3px 2px #4f5291;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+        }
+
+        form .button:hover {
+            background: #6269c7;
+            
+        }
+
+        form .button:hover {
+            background: #6269c7;
+        }
+
+        form .button:active {
+            outline: none;
+            border: none;
+            outline-offset: none;
+            background: #0e1684;
+            box-shadow: 0px 0px 4px 3px #3b3e78;
+        }
+
+        form .button:focus {
+            border: none;
+            outline: none;
+            outline-offset: none;
+            background: #0e1684;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="dv-lvl-0 recruit-on-header">
+            <div class="dv-lvl-1 recruit-on-logo">
+                <p class="par-lvl-2 logo-paragraph">[R]</p>
+            </div>
+        </div>
+
+        <div class="dv-lvl-0 recruiter-on-body">
+            <div class="dv-lvl-1 greeting-panel-container">
+                <div class="dv-lvl-2 greeting-panel-header">
+                    <h1><span>Welcome to </span>RecruitOn</h1>
+                </div>
+                <div class="dv-lvl-2 greeting-panel-content">
+                    <p>Please, enter the name for your profile: </p>
+                </div>
+                
+                <form action="/file-manager/upload" method="GET">
+                    <div class="dv-lvl-3 input-box">
+                        <input class="name" type="text" name="name" />
+                    </div>
+                    <div class="dv-lvl-3 input-box">
+                        <input class="button" type="submit" value="Go" />
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

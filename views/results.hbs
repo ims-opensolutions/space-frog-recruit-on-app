@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/465dd91009.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+    <title>RecruitOn - Results</title>
+    <style>
+
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+            background: #e6e6e6;
+            font-family: 'Barlow Condensed', sans-serif;
+        }
+
+        div.dv-lvl-0.recruit-on-header {
+            max-width: 1920px;
+            width: 100%;
+            height: 100px;
+            background: #252fc2;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            box-shadow: 0px 0px 10px 0px #000;
+            z-index: 2;
+        }
+
+        div.dv-lvl-0.recruiter-on-body {
+            max-width: 1920px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        div.dv-lvl-1.recruit-on-logo {
+            font-size: 3em;
+            margin-left: 30px;
+            color: #e6e6e6;
+        }
+
+        p.par-lvl-2.logo-paragraph {
+            padding: 0;
+            margin: 0;
+            padding-bottom: .2em;
+            letter-spacing: .4em;
+        }
+
+        div.dv-lvl-1.recruiter-result-header {
+            width: 80%;
+            background: #fff;
+            height: 75px;
+            margin: 40px auto;
+            box-shadow: 0px 0px 10px -5px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        div.dv-lvl-2.recruiter-result-button-wrapper {
+            width: 32%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button.by-city {
+            width: 120px;
+            margin: 10px auto;
+            display: block;
+            padding: .7em;
+            background: #b43a3a;
+            color: #e6e6e6;
+            border: none;
+            box-shadow: 0px 0px 3px 2px #ba6868;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+        }
+
+        button.by-city:hover {
+            background: #c18282;
+            
+        }
+        
+        button.by-city:active {
+            outline: none;
+            border: none;
+            outline-offset: none;
+            background: #8c1a1a;
+            box-shadow: 0px 0px 4px 3px #632e2e;
+        }
+
+        button.by-city:focus {
+            border: none;
+            outline: none;
+            outline-offset: none;
+            background: #8c1a1a;
+        }
+
+        button.by-qualification {
+            width: 120px;
+            margin: 10px auto;
+            display: block;
+            padding: .7em;
+            background: #b43a3a;
+            color: #e6e6e6;
+            border: none;
+            box-shadow: 0px 0px 3px 2px #ba6868;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 17px;
+        }
+
+        button.by-qualification:hover {
+            background: #c18282;
+            
+        }
+        
+        button.by-qualification:active {
+            outline: none;
+            border: none;
+            outline-offset: none;
+            background: #8c1a1a;
+            box-shadow: 0px 0px 4px 3px #632e2e;
+        }
+
+        button.by-qualification:focus {
+            border: none;
+            outline: none;
+            outline-offset: none;
+            background: #8c1a1a;
+        }
+
+        div.dv-lvl-1.recruiter-result-banner {
+            height: 50px;
+            width: 100%;
+            max-width: 1920px;
+            background: #fff;
+            box-shadow: 0px 2px 10px -6px #000;
+            display: flex;
+            align-items: center;
+        }
+
+        div.dv-lvl-1.recruiter-result-banner p {
+            margin-left: 30px;
+        }
+
+        div.dv-lvl-1.recruiter-result-items-container {
+            max-width: 1920px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        div.dv-lvl-2.recruiter-result-item {
+            width: 90%;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0px 2px 10px -6px #000;
+            display: flex;
+        }
+
+        div.dv-lvl-3.recruiter-result-item-info {
+            width: 80%;
+        }
+
+        div.dv-lvl-3.recruiter-result-item-qualification {
+            width: 20%;
+            background: linear-gradient(90deg, #c2e9b3, #54cf23);
+        }
+
+        div.dv-lvl-3.recruiter-result-item-qualification {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column wrap;
+        }
+
+        div.dv-lvl-4.recruiter-result-item-info-data-row {
+            margin: 20px 20px;
+            display: flex;
+        }
+
+        p.p-name {
+            margin-right: 180px;
+        }
+
+        p.p-mail {
+            margin-right: 180px;
+        }
+
+        p.p-age {
+            margin-right: 180px;
+        }
+
+        p.p-qualification {
+            text-align: center;
+        }
+
+       
+
+
+     
+
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="dv-lvl-0 recruit-on-header">
+            <div class="dv-lvl-1 recruit-on-logo">
+                <p class="par-lvl-2 logo-paragraph">[R]</p>
+            </div>
+        </div>
+
+        <div class="dv-lvl-0 recruiter-on-body">
+
+            <div class="dv-lvl-1 recruiter-result-header">
+                <div class="dv-lvl-2 recruiter-result-button-wrapper">
+                    <button class="by-city">By Salary</button>
+                    <button class="by-qualification">By Qualification</button>
+                </div>
+            </div>
+
+            <div class="dv-lvl-1 recruiter-result-banner">
+                <p>Showing results: 5. Ordered by city</p>
+            </div>
+
+            <div class="dv-lvl-1 recruiter-result-items-container">
+
+                {{#if data }}
+                   {{#each data}}
+                   
+                   <div class="dv-lvl-2 recruiter-result-item">
+                        <div class="dv-lvl-3 recruiter-result-item-info">
+
+                            <div class="dv-lvl-4 recruiter-result-item-info-data-row">
+                                <p class="p-name"><span class="tag">NAME:</span> {{ this.name }}</p>
+                                <p class="p-surname"><span class="tag">SURNAME:</span> {{ this.surname }}</p>
+                            </div>
+
+                            <div class="dv-lvl-4 recruiter-result-item-info-data-row">
+                                <p class="p-mail"><span class="tag">EMAIL:</span> {{ this.mail }}</p>
+                                <p class="p-phone"><span class="tag">PHONE:</span> {{ this.phone }}</p>
+                            </div>
+
+                            <div class="dv-lvl-4 recruiter-result-item-info-data-row">
+                                <p class="p-age"><span class="tag">AGE:</span> {{ this.age }}</p>
+                                <p class="p-salary"><span class="tag">SALARY:</span> {{ this.salary }}</p>
+                            </div>
+
+                        </div>
+
+                        <div class="dv-lvl-3 recruiter-result-item-qualification">
+                            <p class="qualification">QUALIFICATION</p>
+                            <p class="qualification">{{ this.qualification }}</p>
+                        </div>
+                    </div>
+
+                    {{/each}}
+              
+                {{/if}}
+
+          
+                
+
+            </div>
+
+        </div>
+
+
+    </div>
+    
+</body>
+</html>
