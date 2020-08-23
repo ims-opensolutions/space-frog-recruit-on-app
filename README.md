@@ -1,7 +1,3 @@
-## RecruitOn Web App
-
-Mini app built on NestJS to process data from uploaded excel files
-
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
@@ -27,6 +23,10 @@ Mini app built on NestJS to process data from uploaded excel files
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+  
+## RecruitOn Web App
+
+Mini app built on NestJS to process data from uploaded excel files
 
 ## Description
 
