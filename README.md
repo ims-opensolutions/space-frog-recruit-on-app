@@ -15,7 +15,7 @@ for a better UX.
 
 * Excel file uploaded must contain exactly the required headers, which are:
 * Id, name, surname, mail, phone, age, salary, qualification.
-* All fields must be populates. Otherwise, an error will be thrown.
+* All fields must be populated. Otherwise, an error will be thrown.
 * Name, surname, phone and mail are unqiques. Otherwise, 
 an error will be thrown.
 
