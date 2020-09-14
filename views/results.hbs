@@ -50,24 +50,41 @@
         div.dv-lvl-1.recruiter-result-header {
             width: 80%;
             background: #fff;
-            height: 75px;
             margin: 40px auto;
             box-shadow: 0px 0px 10px -5px #000;
             display: flex;
+            flex-flow: column wrap;
             align-items: center;
             justify-content: center;
         }
 
         div.dv-lvl-2.recruiter-result-button-wrapper {
-            width: 32%;
+            width: 60%;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-around;
+            margin: 20px;
+        }
+
+        div.dv-lvl-2.recruiter-result-status-wrapper {
+            width: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 20px;
+            margin-top: 0;
+            color: #60d233;
+            display: none;
+        }
+
+        div.enabled-by-city,
+        div.enabled-by-salary,
+        div.enabled-by-qualification {
+            opacity: 0;
         }
 
         button.by-city {
             width: 120px;
-            margin: 10px auto;
             display: block;
             padding: .7em;
             background: #b43a3a;
@@ -75,14 +92,13 @@
             border: none;
             box-shadow: 0px 0px 3px 2px #ba6868;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 17px;
+            font-size: 14px;
         }
 
         button.by-city:hover {
             background: #c18282;
-            
         }
-        
+
         button.by-city:active {
             outline: none;
             border: none;
@@ -98,9 +114,8 @@
             background: #8c1a1a;
         }
 
-        button.by-qualification {
+        button.by-salary {
             width: 120px;
-            margin: 10px auto;
             display: block;
             padding: .7em;
             background: #b43a3a;
@@ -108,14 +123,45 @@
             border: none;
             box-shadow: 0px 0px 3px 2px #ba6868;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 17px;
+            font-size: 14px;
+        }
+
+        button.by-salary:hover {
+            background: #c18282;
+        }
+
+        button.by-salary:active {
+            outline: none;
+            border: none;
+            outline-offset: none;
+            background: #8c1a1a;
+            box-shadow: 0px 0px 4px 3px #632e2e;
+        }
+
+        button.by-salary:focus {
+            border: none;
+            outline: none;
+            outline-offset: none;
+            background: #8c1a1a;
+        }
+
+        button.by-qualification {
+            width: 120px;
+            display: block;
+            padding: .7em;
+            background: #b43a3a;
+            color: #e6e6e6;
+            border: none;
+            box-shadow: 0px 0px 3px 2px #ba6868;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
         }
 
         button.by-qualification:hover {
             background: #c18282;
-            
+
         }
-        
+
         button.by-qualification:active {
             outline: none;
             border: none;
@@ -148,7 +194,18 @@
         div.dv-lvl-1.recruiter-result-items-container {
             max-width: 1920px;
             width: 100%;
-            margin: 0 auto;
+            margin: 0 auto 40px auto;
+        }
+
+        h2.he-lvl-2.recruiter-city-item-header {
+            width: 100%;
+            max-width: 1920px;
+            background: #fff;
+            box-shadow: 0px 2px 10px -6px #000;
+            padding: 20px;
+            text-transform: uppercase;
+            font-size: 1.1em;
+            letter-spacing: .5em;
         }
 
         div.dv-lvl-2.recruiter-result-item {
@@ -159,13 +216,60 @@
             display: flex;
         }
 
+        div.dv-lvl-2.show-in-map {
+            width: 29%;
+            box-shadow: 0px 2px 10px -6px #000;
+            display: flex;
+            margin-left: 5%;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            background: #dadcff;
+        }
+
+        div.dv-lvl-2.map-container {
+             width: 90%;
+            margin: 40px auto;
+            background: #efc8c8;
+            box-shadow: 0px 2px 10px -6px #000;
+            display: flex;
+        }
+
+        div.dv-lvl-2.show-in-map:hover {
+            background: #c1c4ff;
+            cursor: pointer;
+        }
+
+        div.dv-lvl-2.show-in-map p {
+            font-size: 1.6em;
+            margin-right: 10px;
+            text-transform: uppercase;
+            color: #555eff;
+        }
+
+        div.dv-lvl-2.show-in-map i {
+            font-size: 2em;
+            color: #555eff;
+        }
+
         div.dv-lvl-3.recruiter-result-item-info {
             width: 80%;
         }
 
         div.dv-lvl-3.recruiter-result-item-qualification {
             width: 20%;
+        }
+
+        div.dv-lvl-3.recruiter-result-item-qualification.green {
             background: linear-gradient(90deg, #c2e9b3, #54cf23);
+        }
+
+        div.dv-lvl-3.recruiter-result-item-qualification.yellow {
+            background: linear-gradient(90deg, #fffbc6, #eae40b);
+        }
+
+        div.dv-lvl-3.recruiter-result-item-qualification.red {
+            background: linear-gradient(90deg, #da9f8d, #d41010);
         }
 
         div.dv-lvl-3.recruiter-result-item-qualification {
@@ -196,10 +300,10 @@
             text-align: center;
         }
 
-       
 
 
-     
+
+
 
     </style>
 </head>
@@ -216,20 +320,26 @@
 
             <div class="dv-lvl-1 recruiter-result-header">
                 <div class="dv-lvl-2 recruiter-result-button-wrapper">
-                    <button class="by-city">By Salary</button>
+                    <button class="by-city">By City</button>
+                    <button class="by-salary">By Salary</button>
                     <button class="by-qualification">By Qualification</button>
+                </div>
+                <div class="dv-lvl-2 recruiter-result-status-wrapper">
+                    <div class="dv-lvl-3 enabled-by-city">[ ENABLED ]</div>
+                    <div class="dv-lvl-3 enabled-by-salary">[ ENABLED ]</div>
+                    <div class="dv-lvl-3 enabled-by-qualification">[ ENABLED ]</div>
                 </div>
             </div>
 
             <div class="dv-lvl-1 recruiter-result-banner">
-                <p>Showing results: 5. Ordered by city</p>
+                <p>Showing results: unordered</p>
             </div>
 
             <div class="dv-lvl-1 recruiter-result-items-container">
 
                 {{#if data }}
                    {{#each data}}
-                   
+
                    <div class="dv-lvl-2 recruiter-result-item">
                         <div class="dv-lvl-3 recruiter-result-item-info">
 
@@ -249,19 +359,25 @@
                             </div>
 
                         </div>
-
+                        
                         <div class="dv-lvl-3 recruiter-result-item-qualification">
                             <p class="qualification">QUALIFICATION</p>
-                            <p class="qualification">{{ this.qualification }}</p>
+                            <p class="p-qualification">{{ this.qualification }}</p>
                         </div>
                     </div>
 
+                    <div class="dv-lvl-2 show-in-map">
+                        <p>Show in map</p>
+                        <i class="fas fa-map"></i>
+                    </div>
+
                     {{/each}}
-              
+
                 {{/if}}
 
-          
-                
+
+                {{!-- {{> partialTemplate website="sitepoint"}} <br> --}}
+
 
             </div>
 
@@ -269,6 +385,437 @@
 
 
     </div>
-    
+
+
+
+    <script>
+
+        let firstLoading = true;
+        let byCitySelected = false;
+        let bySalarySelected = false;
+        let byQualificationSelected = false;
+
+        let showInMapButton = document.querySelectorAll('div.dv-lvl-2.show-in-map')[0];
+
+        const byCityButton = document.querySelectorAll('button.by-city')[0];
+        const bySalaryButton = document.querySelectorAll('button.by-salary')[0];
+        const byQualificationButton = document.querySelectorAll('button.by-qualification')[0];
+
+        const buttonAndStatusContainer = document.querySelectorAll('div.dv-lvl-2.recruiter-result-button-wrapper')[0];
+        const statusIndicatorsContainer = document.querySelectorAll('div.dv-lvl-2.recruiter-result-status-wrapper')[0];
+        const enabledCity = document.querySelectorAll('div.enabled-by-city')[0];
+        const enabledSalary = document.querySelectorAll('div.enabled-by-salary')[0];
+        const enabledQualification = document.querySelectorAll('div.enabled-by-qualification')[0];
+
+        if (byCityButton && bySalaryButton && byQualificationButton) {
+            byCityButton.onclick = (e) => handleFilterClick(e);
+            bySalaryButton.onclick = (e) => handleFilterClick(e);
+            byQualificationButton.onclick = (e) => handleFilterClick(e);
+        } else {
+            throw new Error('Error with buttons. Check structure');
+        }
+
+        const handleFilterClick = (e) => {
+
+            firstLoading = false;
+
+            const buttonKeys = ['city', 'salary', 'qualification'];
+
+            buttonKeys.forEach(currentKey => {
+                if (e.target.className.indexOf('city') > -1) {
+                    byCitySelected = !byCitySelected;
+                }
+
+                if (e.target.className.indexOf('salary') > -1) {
+                    bySalarySelected = !bySalarySelected;
+                    byQualificationSelected = false;
+                }
+
+                if (e.target.className.indexOf('qualification') > -1) {
+                    byQualificationSelected = !byQualificationSelected;
+                    bySalarySelected = false;
+                }
+            });
+
+            handleStatusIndicatorsStatus();
+            triggerFilterRequest();
+        }
+
+        const handleStatusIndicatorsStatus = () => {
+
+            if (byCitySelected || bySalarySelected || byQualificationSelected) {
+                statusIndicatorsContainer.style.display = 'flex';
+                buttonAndStatusContainer.style.marginBottom = '5px';
+            } else {
+                statusIndicatorsContainer.style.display = 'none';
+                buttonAndStatusContainer.style.marginBottom = '20px';
+            }
+
+            if (byCitySelected) enabledCity.style.opacity = '1'; else enabledCity.style.opacity = '0';
+            if (bySalarySelected) enabledSalary.style.opacity = '1'; else enabledSalary.style.opacity = '0';
+            if (byQualificationSelected) enabledQualification.style.opacity = '1'; else enabledQualification.style.opacity = '0';
+
+        }
+
+        const handleQualificationColor = (qualification, element) => {
+            if (parseInt(qualification) >= 8) {
+                element.classList.remove('yellow');
+                element.classList.remove('red');
+                element.classList.add('green');
+            } else if (parseInt(qualification) >= 5 && parseInt(qualification) < 8) {
+                element.classList.remove('green');
+                element.classList.remove('red');
+                element.classList.add('yellow');
+            } else {
+                element.classList.remove('green');
+                element.classList.remove('yellow');
+                element.classList.add('red');
+                
+            }
+        }
+
+        if (firstLoading) {
+            const currentItems = document.querySelectorAll('div.dv-lvl-2.recruiter-result-item');
+            for (const candidate of currentItems) {
+                const qualificationBackgroundNode = candidate.querySelectorAll('div.dv-lvl-3.recruiter-result-item-qualification')[0];
+                const qualification = candidate.querySelectorAll('p.p-qualification')[0].innerText;
+                handleQualificationColor(qualification, qualificationBackgroundNode);
+            }
+        }
+        
+
+        const triggerFilterRequest = () => {
+
+            let xmlHttpRequest;
+
+            if (window.XMLHttpRequest) {
+                xmlHttpRequest = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            let filters;
+            xmlHttpRequest.onreadystatechange = () => {
+                filters = {
+                    'city' : byCitySelected,
+                    'salary': bySalarySelected,
+                    'qualification': byQualificationSelected
+                };
+            };
+
+            xmlHttpRequest.open('POST', '/file-manager/render', true);
+
+            if (xmlHttpRequest.readyState > 0) {
+                xmlHttpRequest.setRequestHeader('Content-Type', 'application/json');
+            }
+
+            xmlHttpRequest.send(JSON.stringify(filters));
+
+            xmlHttpRequest.onload = () => {
+                console.log(xmlHttpRequest.readyState);
+                console.log(xmlHttpRequest.status);
+                if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
+                    const response = JSON.parse(xmlHttpRequest.responseText);
+
+                    console.log(response)
+
+                    let container;
+                    let lastCity;
+                    let infoModelItemNode = document.querySelectorAll('div.dv-lvl-2.recruiter-result-item')[0];
+                    let modeAndQuantityIndicator = document.querySelectorAll('div.dv-lvl-1.recruiter-result-banner p')[0];
+                    let quantity = document.querySelectorAll('div.dv-lvl-2.recruiter-result-item').length;
+
+                    switch (response.mode) {
+                        case 'city':
+                            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                            container.innerHTML = '';
+                            lastCity = 'none';
+                            console.log(response.object);
+                            modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city';
+                            for (const candidate of response.object) {
+                                if (candidate.city !== lastCity) {
+                                    let newInfoItem = document.createElement("div")
+                                    newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + candidate.id;
+                                    newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                    container.innerHTML += "<h2 class=\"he-lvl-2 recruiter-city-item-header\">" + candidate.city + "</h2>";
+                                    let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                    let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                    let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                    let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                    let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                    let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                    let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
+                                    surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
+                                    emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
+                                    phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + candidate.phone;
+                                    ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + candidate.age;
+                                    salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + candidate.salary;
+                                    qualificationNode.innerText = candidate.qualification;
+
+                                    handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
+                                    container.appendChild(newInfoItem);
+                                    lastCity = candidate.city;
+                                } else {
+                                    let newInfoItem = document.createElement("div")
+                                    newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + candidate.id;
+                                    newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                    let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                    let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                    let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                    let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                    let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                    let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                    let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
+                                    surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
+                                    emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
+                                    phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + candidate.phone;
+                                    ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + candidate.age;
+                                    salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + candidate.salary;
+                                    qualificationNode.innerText = candidate.qualification;
+
+                                    handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
+                                    container.appendChild(newInfoItem);
+                                    lastCity = candidate.city;
+                                }
+                            }
+                            break;
+                        case 'city/salary':
+                            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                            container.innerHTML = '';
+                            lastCity = 'none';
+                            console.log(response.object);
+                            modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city and salary';
+                            for (const cityCandidates of response.object) {
+                                let currentCity = Object.keys(cityCandidates).toString();
+                                container.innerHTML += "<h2 class=\"he-lvl-2 recruiter-city-item-header\">" + currentCity + "</h2>";
+                                for (const cityCandidate of cityCandidates[currentCity]) {
+                                    let newInfoItem = document.createElement("div")
+                                    newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + cityCandidate.id;
+                                    newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                    let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                    let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                    let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                    let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                    let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                    let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                    let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.name;
+                                    surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.surname;
+                                    emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + cityCandidate.mail;
+                                    phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + cityCandidate.phone;
+                                    ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + cityCandidate.age;
+                                    salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + cityCandidate.salary;
+                                    qualificationNode.innerText = cityCandidate.qualification;
+
+                                    handleQualificationColor(cityCandidate.qualification, qualificationNode.parentElement);
+                                    container.appendChild(newInfoItem);
+                                }
+                            }
+                            break;
+                        case 'city/qualification':
+                            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                            container.innerHTML = '';
+                            lastCity = 'none';
+                            console.log(response.object);
+                            modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city and qualification';
+                            for (const cityCandidates of response.object) {
+                                let currentCity = Object.keys(cityCandidates).toString();
+                                container.innerHTML += "<h2 class=\"he-lvl-2 recruiter-city-item-header\">" + currentCity + "</h2>";
+                                for (const cityCandidate of cityCandidates[currentCity]) {
+                                    let newInfoItem = document.createElement("div")
+                                    newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + cityCandidate.id;
+                                    newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                    let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                    let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                    let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                    let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                    let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                    let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                    let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.name;
+                                    surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.surname;
+                                    emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + cityCandidate.mail;
+                                    phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + cityCandidate.phone;
+                                    ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + cityCandidate.age;
+                                    salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + cityCandidate.salary;
+                                    qualificationNode.innerText = cityCandidate.qualification;
+
+                                    handleQualificationColor(cityCandidate.qualification, qualificationNode.parentElement);
+                                    container.appendChild(newInfoItem);
+                                }
+                            }
+                            break;
+                        case 'salary':
+                            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                            container.innerHTML = '';
+                            lastCity = 'none';
+                            console.log(response.object);
+                            modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by salary';
+                            for (const candidate of response.object) {
+                                let newInfoItem = document.createElement("div")
+                                newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + candidate.id;
+                                newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
+                                surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
+                                emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
+                                phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + candidate.phone;
+                                ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + candidate.age;
+                                salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + candidate.salary;
+                                qualificationNode.innerText = candidate.qualification;
+
+                                handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
+                                container.appendChild(newInfoItem);
+                            }
+                            break;
+                        case 'qualification':
+                            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                            container.innerHTML = '';
+                            lastCity = 'none';
+                            console.log(response.object);
+                            modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by qualification';
+                            for (const candidate of response.object) {
+                                let newInfoItem = document.createElement("div")
+                                newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + candidate.id;
+                                newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
+                                surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
+                                emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
+                                phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + candidate.phone;
+                                ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + candidate.age;
+                                salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + candidate.salary;
+                                qualificationNode.innerText = candidate.qualification;
+
+                                handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
+                                container.appendChild(newInfoItem);
+                            }
+                            break;
+                        case 'initial':
+                            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                            container.innerHTML = '';
+                            lastCity = 'none';
+                            console.log(response.object);
+                            modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Unordered';
+                            for (const candidate of response.object) {
+                                let newInfoItem = document.createElement("div")
+                                newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + candidate.id;
+                                newInfoItem.innerHTML = infoModelItemNode.innerHTML;
+                                let nameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-name')[0];
+                                let surnameNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-surname')[0];
+                                let emailNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-mail')[0];
+                                let phoneNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-phone')[0];
+                                let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
+                                let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
+                                let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
+                                surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
+                                emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
+                                phoneNode.innerText = phoneNode.innerText.substring(0, phoneNode.innerText.indexOf(' ')) + ' ' + candidate.phone;
+                                ageNode.innerText = ageNode.innerText.substring(0, ageNode.innerText.indexOf(' ')) + ' ' + candidate.age;
+                                salaryNode.innerText = salaryNode.innerText.substring(0, salaryNode.innerText.indexOf(' ')) + ' ' + candidate.salary;
+                                qualificationNode.innerText = candidate.qualification;
+
+                                handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
+                                container.appendChild(newInfoItem);
+                            }
+                        default:
+                            'No filters selected';  
+                            break;
+                    }
+                }
+            }
+
+        };
+
+        showInMapButton.onclick = () => {
+            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+            container.innerHTML = '';
+            let mapContainer = document.createElement('div');
+            mapContainer.classList.add('dv-lvl-2');
+            mapContainer.classList.add('map-container');
+
+            container.appendChild(mapContainer);
+            let polyfillScript = document.createElement('script');
+            polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
+            let googleScript = document.createElement('script');
+            googleScript.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_MKNA&callback=initMap&libraries=&v=weekly";
+            googleScript.defer = true;
+
+            document.head.appendChild(polyfillScript);
+            document.head.appendChild(googleScript);
+
+            
+        };
+
+        let map;
+
+        function initMap() {
+            map = new google.maps.Map(document.querySelectorAll("div.map-container")[0], {
+            center: {
+                lat: 48.113397,
+                lng: 15.670853
+            },
+            zoom: 4
+            });
+
+            const geocoder = new google.maps.Geocoder();
+
+            let xmlHttpRequest;
+
+            if (window.XMLHttpRequest) {
+                xmlHttpRequest = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            let filters;
+            xmlHttpRequest.onreadystatechange = () => {
+                filters = {
+                    'city' : true,
+                };
+            };
+
+            xmlHttpRequest.open('POST', '/file-manager/render', true);
+
+            if (xmlHttpRequest.readyState > 0) {
+                xmlHttpRequest.setRequestHeader('Content-Type', 'application/json');
+            }
+
+            xmlHttpRequest.send(JSON.stringify(filters));
+
+            xmlHttpRequest.onload = () => {
+
+            for (const city of cities) {
+                geocoder.geocode({ address: city }, (results, status) => {
+                    if (status === "OK") {
+                        new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location
+                        });
+                    } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
+            }
+
+        }
+
+
+    </script>
 </body>
 </html>

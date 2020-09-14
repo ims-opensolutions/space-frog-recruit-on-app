@@ -1,9 +1,11 @@
-import { Controller, Get, Render, Post, UseInterceptors, UploadedFile, BadRequestException, Body, Query } from '@nestjs/common';
+import { Controller, Get, Render, Post, UseInterceptors, UploadedFile, BadRequestException, Body, Query, Param, Req, UseFilters, InternalServerErrorException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { Candidate } from './entities/candidate';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Request } from 'express';
+import { Filter } from './entities/filter';
 
 @Controller('file-manager')
 export class FileManagerController {
@@ -97,8 +99,8 @@ export class FileManagerController {
                 if (data) {
                     userDatabase = JSON.parse(data);
     
-                    userDatabase = userDatabase.map((currentUser, mainIndex) => {
-                        candidates.forEach((insertedUser, nestedIndex) => {
+                    userDatabase.forEach((currentUser) => {
+                        candidates.forEach((insertedUser) => {
                             if (currentUser.id === insertedUser.id) {
                                 // update
                                 currentUser = insertedUser;
@@ -140,7 +142,6 @@ export class FileManagerController {
                 });
     
                 console.log('Integrity validation for data passed. Database populated. Showing results');
-    
                 userDatabase = JSON.stringify(userDatabase);
                 // console.log(returnedData);
                 fs.writeFile(databaseUrl, userDatabase, 'utf8', (err) => {
@@ -210,6 +211,205 @@ export class FileManagerController {
 
         // return { data: returnedData }
 
+    }
+
+    @Post('render')
+    async renderResults(@Body() filters: Filter) { 
+
+        let dataToView = {};
+        const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
+
+        let returnedData = await new Promise(function(resolve, reject) {
+
+            fs.readFile(databaseUrl, 'utf8', (err, data) => {
+
+                if (err) {
+                    throw err;
+                }
+
+                if (!data)  {
+                    throw new InternalServerErrorException('Database not populated');
+                }
+
+                if (err) {
+                    reject(err); 
+                 } else {
+                    resolve(JSON.parse(data));
+                 }
+                 
+            });
+
+        });
+
+        const candidatesData = returnedData as Candidate[];
+
+        dataToView = {
+            mode: 'initial',
+            object: candidatesData
+        };
+
+        if (!filters) {
+            throw new InternalServerErrorException('Filters not sent');
+        }
+
+        let candidatesGroupedByCity = [];
+        let filteredCities = [];
+        if (filters && filters.city) {
+            const cities = candidatesData.map(candidate => candidate.city);
+            
+            // Remove duplicate on cities
+            for (const city of cities) {
+                if (!filteredCities.includes(city)) {
+                    filteredCities.push(city);
+                }
+            }
+
+            filteredCities = filteredCities.sort();
+
+            // Gets candidates grouped by city
+            for (const city of filteredCities) {
+                candidatesData.filter(candidate => candidate.city === city)
+                              .forEach(candidate => candidatesGroupedByCity.push(candidate));
+            }
+
+            console.log('_____ONLY SORTED BY CITY____');
+            console.log(candidatesGroupedByCity);
+
+            dataToView = {
+                mode: 'city',
+                object: candidatesGroupedByCity
+            };
+
+        }
+
+        if (filters && filters.salary) {
+
+            // If already sorted by city
+            if (candidatesGroupedByCity && candidatesGroupedByCity.length > 0) {
+                let candidatesGroupedByCityAndSalary = [];
+                if (filteredCities) {
+                    for (const city of filteredCities) {
+                        candidatesGroupedByCityAndSalary.push({
+                            [city] : []
+                        });
+                    }
+                }
+
+                candidatesGroupedByCity.forEach(candidate => {
+                    candidatesGroupedByCityAndSalary.forEach(cityObject => {
+                        let selectedCity = Object.keys(cityObject).toString();
+                        if (candidate.city === selectedCity) {
+                            cityObject[selectedCity].push(candidate);
+                        }
+                    });
+                })
+
+                for (const cityObjects of candidatesGroupedByCityAndSalary) {
+                    for (const key in cityObjects) {
+                        cityObjects[key] = cityObjects[key].sort((candidateA, candidateB) => {
+                            if (candidateA.salary > candidateB.salary) return -1;
+                            if (candidateA.salary === candidateB.salary) return 0;
+                            if (candidateA.salary < candidateB.salary) return 1;
+                        });
+                    }
+                }
+
+                console.log('_____SORTED BY CITY AND SALARY____');
+                for (const cityObjects of candidatesGroupedByCityAndSalary) {
+                    console.log(cityObjects);
+                }
+
+                dataToView = {
+                    mode: 'city/salary',
+                    object: candidatesGroupedByCityAndSalary
+                };
+
+            } else {
+
+                // If only salary filter selected
+                let candidatesGroupedBySalary = [];
+                candidatesGroupedBySalary = candidatesData.sort((candidateA, candidateB) => {
+                    if (candidateA.salary > candidateB.salary) return -1;
+                    if (candidateA.salary === candidateB.salary) return 0;
+                    if (candidateA.salary < candidateB.salary) return 1;
+                });
+
+                console.log('_____SORTED BY SALARY____');
+                console.log(candidatesGroupedBySalary);
+
+                dataToView = {
+                    mode: 'salary',
+                    object: candidatesGroupedBySalary
+                };
+            }
+
+        }
+
+        if (filters && filters.qualification) {
+
+            // If already sorted by city
+            if (candidatesGroupedByCity && candidatesGroupedByCity.length > 0) {
+                let candidatesGroupedByCityAndQualification = [];
+                if (filteredCities) {
+                    for (const city of filteredCities) {
+                        candidatesGroupedByCityAndQualification.push({
+                            [city] : []
+                        });
+                    }
+                }
+
+                candidatesGroupedByCity.forEach(candidate => {
+                    candidatesGroupedByCityAndQualification.forEach(cityObject => {
+                        let selectedCity = Object.keys(cityObject).toString();
+                        if (candidate.city === selectedCity) {
+                            cityObject[selectedCity].push(candidate);
+                        }
+                    });
+                })
+
+                for (const cityObjects of candidatesGroupedByCityAndQualification) {
+                    for (const key in cityObjects) {
+                        cityObjects[key] = cityObjects[key].sort((candidateA, candidateB) => {
+                            if (candidateA.qualification > candidateB.qualification) return -1;
+                            if (candidateA.qualification === candidateB.qualification) return 0;
+                            if (candidateA.qualification < candidateB.qualification) return 1;
+                        });
+                    }
+                }
+
+                console.log('_____SORTED BY CITY AND QUALIFICATION');
+                for (const cityObjects of candidatesGroupedByCityAndQualification) {
+                    console.log(cityObjects);
+                }
+
+                dataToView = {
+                    mode: 'city/qualification',
+                    object: candidatesGroupedByCityAndQualification
+                };
+
+            } else {
+
+                // If only qualification filter selected
+                let candidatesGroupedByQualification = [];
+                candidatesGroupedByQualification = candidatesData.sort((candidateA, candidateB) => {
+                    if (candidateA.qualification > candidateB.qualification) return -1;
+                    if (candidateA.qualification === candidateB.qualification) return 0;
+                    if (candidateA.qualification < candidateB.qualification) return 1;
+                }); 
+
+                console.log('_____SORTED QUALIFICATION');
+                console.log(candidatesGroupedByQualification);
+
+                dataToView = {
+                    mode: 'qualification',
+                    object: candidatesGroupedByQualification
+                };
+
+            }
+
+        }
+
+        return dataToView;
     }
 
   
