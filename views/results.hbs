@@ -228,11 +228,12 @@
         }
 
         div.dv-lvl-2.map-container {
-             width: 90%;
+            width: 90%;
             margin: 40px auto;
             background: #efc8c8;
             box-shadow: 0px 2px 10px -6px #000;
             display: flex;
+            height: 600px;
         }
 
         div.dv-lvl-2.show-in-map:hover {
@@ -366,7 +367,7 @@
                         </div>
                     </div>
 
-                    <div class="dv-lvl-2 show-in-map">
+                    <div class="dv-lvl-2 show-in-map r-{{ this.id }}">
                         <p>Show in map</p>
                         <i class="fas fa-map"></i>
                     </div>
@@ -395,7 +396,7 @@
         let bySalarySelected = false;
         let byQualificationSelected = false;
 
-        let showInMapButton = document.querySelectorAll('div.dv-lvl-2.show-in-map')[0];
+        let showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
 
         const byCityButton = document.querySelectorAll('button.by-city')[0];
         const bySalaryButton = document.querySelectorAll('button.by-salary')[0];
@@ -741,26 +742,32 @@
             }
 
         };
+ 
+        let userId;
 
-        showInMapButton.onclick = () => {
-            container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
-            container.innerHTML = '';
-            let mapContainer = document.createElement('div');
-            mapContainer.classList.add('dv-lvl-2');
-            mapContainer.classList.add('map-container');
+        showInMapButtons.forEach(showInMapButton => {
+            showInMapButton.onclick = (e) => {
+                let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
+                userId = parseInt(clickedButtonClassName.split('r-')[1]);
+                container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                container.innerHTML = '';
+                let mapContainer = document.createElement('div');
+                mapContainer.classList.add('dv-lvl-2');
+                mapContainer.classList.add('map-container');
 
-            container.appendChild(mapContainer);
-            let polyfillScript = document.createElement('script');
-            polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
-            let googleScript = document.createElement('script');
-            googleScript.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_MKNA&callback=initMap&libraries=&v=weekly";
-            googleScript.defer = true;
+                container.appendChild(mapContainer);
+                let polyfillScript = document.createElement('script');
+                polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
+                let googleScript = document.createElement('script');
+                googleScript.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_APY_KEY_MKNA&callback=initMap&libraries=&v=weekly";
+                googleScript.defer = true;
 
-            document.head.appendChild(polyfillScript);
-            document.head.appendChild(googleScript);
+                document.head.appendChild(polyfillScript);
+                document.head.appendChild(googleScript);
 
-            
-        };
+            };
+        });
+
 
         let map;
 
@@ -800,17 +807,24 @@
 
             xmlHttpRequest.onload = () => {
 
-            for (const city of cities) {
-                geocoder.geocode({ address: city }, (results, status) => {
-                    if (status === "OK") {
-                        new google.maps.Marker({
-                            map: map,
-                            position: results[0].geometry.location
-                        });
-                    } else {
-                    alert("Geocode was not successful for the following reason: " + status);
-                    }
-                });
+                
+
+                if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
+                    const response = JSON.parse(xmlHttpRequest.responseText);
+
+                    let user = response.object.find(currentUser => userId === currentUser.id);
+
+                    geocoder.geocode({ address: user.city }, (results, status) => {
+                        if (status === "OK") {
+                            new google.maps.Marker({
+                                map: map,
+                                position: results[0].geometry.location
+                            });
+                        } else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                        }
+                    });
+                }
             }
 
         }
