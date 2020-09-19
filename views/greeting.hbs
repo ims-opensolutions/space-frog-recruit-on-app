@@ -84,6 +84,20 @@
             font-size: 17px;
         }
 
+        span.error-message {
+            color: #b43a3a;
+            display: block;
+            margin: 20px 0;
+            display: none;
+        }
+
+        span.error-bad-request {
+            color: #b43a3a;
+            display: block;
+            margin: 20px 0;
+            display: none;
+        }
+
         form .button {
             margin-top: 10px;
             width: 80px;
@@ -144,6 +158,8 @@
                 <form action="/file-manager/upload" method="GET">
                     <div class="dv-lvl-3 input-box">
                         <input class="name" type="text" name="name" />
+                        <span class="error-message">Please, you must introduce a name</span>
+                        <span class="error-bad-request">Bad request done to upload page. Please, complete the form</span>
                     </div>
                     <div class="dv-lvl-3 input-box">
                         <input class="button" type="submit" value="Go" />
@@ -153,6 +169,37 @@
             </div>
         </div>
     </div>
+
+    <script>
+
+        let form = document.forms[0];
+
+        let referrer = document.referrer;
+
+        if (document.referrer && document.referrer.indexOf('upload') > -1) {
+            let badRequestMessage = form.querySelector('span.error-bad-request');
+            badRequestMessage.style.display = 'block';
+        }
+        
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            let name = form.querySelector('input.name');
+            
+            if (!name || name.value.trim() === '') {
+                let errorMessage = form.querySelector('span.error-message');
+                errorMessage.style.display = 'block';
+                return;
+            } else {
+                form.submit();
+            }
+
+            
+        }
+
+
+
+
+    </script>
     
 </body>
 </html>

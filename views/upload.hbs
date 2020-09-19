@@ -76,6 +76,7 @@
             padding: .8em 1.2em;
         }
 
+
         div.dv-lvl-3.input-box .excel-file {
             display: none;
         }
@@ -192,6 +193,11 @@
     </div>
 
     <script>
+
+        let query = window.location.search;
+
+        if (!query || query.trim() === '' || !query.trim().startsWith('?name=') || query.trim().length <= 6) window.location = '/file-manager/' ;
+
 
         let uploadButton = document.querySelectorAll('button.upload-button')[0];
         let fileInput = document.querySelectorAll('input.excel-file')[0];

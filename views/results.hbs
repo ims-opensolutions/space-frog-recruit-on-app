@@ -394,6 +394,8 @@
 
     <script>
 
+        let pageStateOnResults = 1;
+        let previousStates = [];
         let firstLoading = true;
         let byCitySelected = false;
         let bySalarySelected = false;
@@ -420,6 +422,14 @@
         }
 
         const handleFilterClick = (e) => {
+
+            previousStates.push(getEnabledFilters());
+            console.log('__CURRENT STATE BEFORE SAVING');
+            console.log(previousStates);
+
+            window.history.pushState({ page: pageStateOnResults }, 'results-interaction-' + pageStateOnResults, '/file-manager/generate');
+            pageStateOnResults++;
+            console.log(window.history);
 
             firstLoading = false;
 
@@ -810,8 +820,6 @@
 
             xmlHttpRequest.onload = () => {
 
-                
-
                 if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
                     const response = JSON.parse(xmlHttpRequest.responseText);
 
@@ -832,6 +840,29 @@
 
         }
 
+        window.onpopstate = () => {
+
+            console.log('__PREVIOUS STATE');
+            let previousState = previousStates.pop();
+            console.log(previousState);
+
+            byCitySelected = previousState.city ? true : false;
+            bySalarySelected = previousState.salary ? true : false;
+            byQualificationSelected = previousState.qualification ? true : false;
+
+            handleStatusIndicatorsStatus();     
+            triggerFilterRequest();
+        }; 
+
+        const getEnabledFilters = () => {
+            return  {
+                city: byCitySelected,
+                salary: bySalarySelected,
+                qualification: byQualificationSelected
+            };
+        }
+
+       
 
     </script>
 </body>
