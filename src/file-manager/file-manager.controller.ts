@@ -21,6 +21,74 @@ export class FileManagerController {
         return { name: name };
     }
 
+    @Get('map/:id')
+    @Render('map')
+    getMap(@Param('id') id) {
+    }
+    //     if (id) {
+    //         const userId = parseInt(id);
+    //         let map;
+
+    //     function initMap() {
+    //         map = new google.maps.Map(document.querySelectorAll("div.map-container")[0], {
+    //         center: {
+    //             lat: 48.113397,
+    //             lng: 15.670853
+    //         },
+    //         zoom: 4
+    //         });
+
+    //         const geocoder = new google.maps.Geocoder();
+
+    //         let xmlHttpRequest;
+
+    //         if (window.XMLHttpRequest) {
+    //             xmlHttpRequest = new XMLHttpRequest();
+    //         } else if (window.ActiveXObject) {
+    //             xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+    //         }
+
+    //         let filters;
+    //         xmlHttpRequest.onreadystatechange = () => {
+    //             filters = {
+    //                 'city' : true,
+    //             };
+    //         };
+
+    //         xmlHttpRequest.open('POST', '/file-manager/render', true);
+
+    //         if (xmlHttpRequest.readyState > 0) {
+    //             xmlHttpRequest.setRequestHeader('Content-Type', 'application/json');
+    //         }
+
+    //         xmlHttpRequest.send(JSON.stringify(filters));
+
+    //         xmlHttpRequest.onload = () => {
+
+    //             if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
+    //                 const response = JSON.parse(xmlHttpRequest.responseText);
+
+    //                 let user = response.object.find(currentUser => userId === currentUser.id);
+
+    //                 geocoder.geocode({ address: user.city }, (results, status) => {
+    //                     if (status === "OK") {
+    //                         new google.maps.Marker({
+    //                             map: map,
+    //                             position: results[0].geometry.location
+    //                         });
+    //                     } else {
+    //                     alert("Geocode was not successful for the following reason: " + status);
+    //                     }
+    //                 });
+    //             }
+    //         }
+
+    //     }
+    //     } else {
+    //         throw new InternalServerErrorException('You must provide an id to generate the map');
+    //     }
+    // }
+
     @Post('generate')
     @Render('results')
     @UseInterceptors(FileInterceptor('excel-file'))

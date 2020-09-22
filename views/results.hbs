@@ -29,9 +29,33 @@
         }
 
         div.dv-lvl-0.recruiter-on-body {
+            padding: .1px;
+            box-shadow: 0px 0px 5px -1px #000;
             max-width: 1920px;
             width: 100%;
             margin: 0 auto;
+        }
+
+        div.dv-lvl-1.page-title {
+            margin: 40px 5%;
+            width: 27%;
+            background: #252fc2;
+            color: #e6e6e6;
+            box-shadow: 0px 2px 10px -6px #000;
+        }
+
+        h1.he-lvl-2.page-title-header {
+            padding: 20px;
+        }
+
+        div.dv-lvl-1.filters-text-container {
+            margin: 10px 5%;
+            width: 27%;
+        }
+
+        p.par-lvl-2.filters-text {
+            padding: 10px;
+            font-size: 1.3em;
         }
 
         div.dv-lvl-1.recruit-on-logo {
@@ -182,12 +206,13 @@
 
         div.dv-lvl-1.recruiter-result-banner {
             height: 50px;
-            width: 100%;
+            width: 90%;
             max-width: 1920px;
             background: #fff;
             box-shadow: 0px 2px 10px -6px #000;
             display: flex;
             align-items: center;
+            margin: 0 auto;
         }
 
         div.dv-lvl-1.recruiter-result-banner p {
@@ -201,7 +226,6 @@
         }
 
         h2.he-lvl-2.recruiter-city-item-header {
-            width: 100%;
             max-width: 1920px;
             background: #fff;
             box-shadow: 0px 2px 10px -6px #000;
@@ -209,6 +233,10 @@
             text-transform: uppercase;
             font-size: 1.1em;
             letter-spacing: .5em;
+            margin: 40px 5%;
+            width: 27%;
+            background: #252fc2;
+            color: #e6e6e6;
         }
 
         div.dv-lvl-2.recruiter-result-item {
@@ -321,6 +349,14 @@
         </div>
 
         <div class="dv-lvl-0 recruiter-on-body">
+
+            <div class="dv-lvl-1 page-title">
+                <h1 class="he-lvl-2 page-title-header">RESULTS</h1>
+            </div>
+
+            <div class="dv-lvl-1 filters-text-container">
+                <p class="par-lvl-2 filters-text">You can apply filters here: </p>
+            </div>
 
             <div class="dv-lvl-1 recruiter-result-header">
                 <div class="dv-lvl-2 recruiter-result-button-wrapper">
@@ -559,6 +595,16 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    
+                                    let showMapIndex = 0;
+                                    showInMapButtons.forEach(
+                                        (currentShowMapNode, index) => {
+                                            if (candidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                                showMapIndex = index;
+                                            }
+                                        });
+                                    let showMapNode = showInMapButtons[showMapIndex];
+
                                     nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
                                     surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
                                     emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
@@ -569,6 +615,7 @@
 
                                     handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
                                     container.appendChild(newInfoItem);
+                                    container.appendChild(showMapNode)
                                     lastCity = candidate.city;
                                 } else {
                                     let newInfoItem = document.createElement("div")
@@ -581,6 +628,16 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    
+                                    let showMapIndex = 0;
+                                    showInMapButtons.forEach(
+                                        (currentShowMapNode, index) => {
+                                            if (candidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                                showMapIndex = index;
+                                            }
+                                        });
+                                    let showMapNode = showInMapButtons[showMapIndex];
+                                    
                                     nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
                                     surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
                                     emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
@@ -591,6 +648,7 @@
 
                                     handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
                                     container.appendChild(newInfoItem);
+                                    container.appendChild(showMapNode)
                                     lastCity = candidate.city;
                                 }
                             }
@@ -615,6 +673,16 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    
+                                    let showMapIndex = 0;
+                                    showInMapButtons.forEach(
+                                        (currentShowMapNode, index) => {
+                                            if (cityCandidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                                showMapIndex = index;
+                                            }
+                                        });
+                                    let showMapNode = showInMapButtons[showMapIndex];
+                                    
                                     nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.name;
                                     surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.surname;
                                     emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + cityCandidate.mail;
@@ -625,6 +693,7 @@
 
                                     handleQualificationColor(cityCandidate.qualification, qualificationNode.parentElement);
                                     container.appendChild(newInfoItem);
+                                    container.appendChild(showMapNode);
                                 }
                             }
                             break;
@@ -648,6 +717,16 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    
+                                    let showMapIndex = 0;
+                                    showInMapButtons.forEach(
+                                        (currentShowMapNode, index) => {
+                                            if (cityCandidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                                showMapIndex = index;
+                                            }
+                                        });
+                                    let showMapNode = showInMapButtons[showMapIndex];
+
                                     nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.name;
                                     surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + cityCandidate.surname;
                                     emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + cityCandidate.mail;
@@ -658,6 +737,7 @@
 
                                     handleQualificationColor(cityCandidate.qualification, qualificationNode.parentElement);
                                     container.appendChild(newInfoItem);
+                                    container.appendChild(showMapNode);
                                 }
                             }
                             break;
@@ -678,6 +758,16 @@
                                 let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                 let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                 let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                
+                                let showMapIndex = 0;
+                                showInMapButtons.forEach(
+                                    (currentShowMapNode, index) => {
+                                        if (candidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                            showMapIndex = index;
+                                        }
+                                    });
+                                let showMapNode = showInMapButtons[showMapIndex];
+
                                 nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
                                 surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
                                 emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
@@ -688,6 +778,7 @@
 
                                 handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
                                 container.appendChild(newInfoItem);
+                                container.appendChild(showMapNode);
                             }
                             break;
                         case 'qualification':
@@ -707,6 +798,16 @@
                                 let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                 let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                 let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                
+                                let showMapIndex = 0;
+                                showInMapButtons.forEach(
+                                    (currentShowMapNode, index) => {
+                                        if (candidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                            showMapIndex = index;
+                                        }
+                                    });
+                                let showMapNode = showInMapButtons[showMapIndex];
+
                                 nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
                                 surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
                                 emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
@@ -717,6 +818,7 @@
 
                                 handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
                                 container.appendChild(newInfoItem);
+                                container.appendChild(showMapNode);
                             }
                             break;
                         case 'initial':
@@ -736,6 +838,16 @@
                                 let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                 let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                 let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                
+                                let showMapIndex = 0;
+                                showInMapButtons.forEach(
+                                    (currentShowMapNode, index) => {
+                                        if (candidate.id === parseInt(currentShowMapNode.className.split('r-')[1])) {
+                                            showMapIndex = index;
+                                        }
+                                    });
+                                let showMapNode = showInMapButtons[showMapIndex];
+
                                 nameNode.innerText = nameNode.innerText.substring(0, nameNode.innerText.indexOf(' ')) + ' ' + candidate.name;
                                 surnameNode.innerText = surnameNode.innerText.substring(0, surnameNode.innerText.indexOf(' ')) + ' ' + candidate.surname;
                                 emailNode.innerText = emailNode.innerText.substring(0, emailNode.innerText.indexOf(' ')) + ' ' + candidate.mail;
@@ -746,11 +858,15 @@
 
                                 handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
                                 container.appendChild(newInfoItem);
+                                container.appendChild(showMapNode);
                             }
+                            break;
                         default:
-                            'No filters selected';  
+                            console.log('No filters selected');  
                             break;
                     }
+                    showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
+                    setOnClickEvents();
                 }
             }
 
@@ -758,29 +874,36 @@
  
         let userId;
 
-        showInMapButtons.forEach(showInMapButton => {
-            showInMapButton.onclick = (e) => {
-                let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
-                userId = parseInt(clickedButtonClassName.split('r-')[1]);
-                container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
-                container.innerHTML = '';
-                let mapContainer = document.createElement('div');
-                mapContainer.classList.add('dv-lvl-2');
-                mapContainer.classList.add('map-container');
+        const setOnClickEvents = () => {
 
-                container.appendChild(mapContainer);
-                let polyfillScript = document.createElement('script');
-                polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
-                let googleScript = document.createElement('script');
-                googleScript.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_APY_KEY_MKNA&callback=initMap&libraries=&v=weekly";
-                googleScript.defer = true;
+            showInMapButtons.forEach(showInMapButton => {
+                console.log('foreaching');
+                showInMapButton.onclick = (e) => {
+                    console.log('damn clicked0);')
+                    let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
+                    userId = parseInt(clickedButtonClassName.split('r-')[1]);
+                    window.location = '/file-manager/map/' + userId;
+                    /* container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
+                    container.innerHTML = '';
+                    let mapContainer = document.createElement('div');
+                    mapContainer.classList.add('dv-lvl-2');
+                    mapContainer.classList.add('map-container');
 
-                document.head.appendChild(polyfillScript);
-                document.head.appendChild(googleScript);
+                    container.appendChild(mapContainer);
+                    let polyfillScript = document.createElement('script');
+                    polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
+                    let googleScript = document.createElement('script');
+                    googleScript.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_APY_KEY_MKNA&callback=initMap&libraries=&v=weekly";
+                    googleScript.defer = true;
 
-            };
-        });
+                    document.head.appendChild(polyfillScript);
+                    document.head.appendChild(googleScript); */
 
+                };
+            });
+        }
+
+        setOnClickEvents();
 
         let map;
 
