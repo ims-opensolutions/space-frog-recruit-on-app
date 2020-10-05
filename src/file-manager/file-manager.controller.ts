@@ -25,6 +25,7 @@ export class FileManagerController {
     @Render('map')
     getMap(@Param('id') id) {
     }
+
     //     if (id) {
     //         const userId = parseInt(id);
     //         let map;
@@ -104,6 +105,7 @@ export class FileManagerController {
 
         // 1 - Validate in custom method
         for (const headerChar of headerReference) {
+            console.log(worksheet[headerChar + '1'].v);
             if (!headers.includes(worksheet[headerChar + '1'].v)) {
                 throw new BadRequestException('Header names do not fit the requirements. Check header row');
             }
@@ -255,6 +257,8 @@ export class FileManagerController {
             });
 
         });
+
+        console.log(returnedData);
 
         if (returnedData) {
             return { data: returnedData };
@@ -478,6 +482,41 @@ export class FileManagerController {
         }
 
         return dataToView;
+    }
+
+    @Get('generate')
+    @Render('results')
+    async getCandidatesData() {
+
+        const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
+
+        let returnedData = await new Promise(function(resolve, reject) {
+
+            fs.readFile(databaseUrl, 'utf8', (err, data) => {
+
+                if (err) {
+                    throw err;
+                }
+
+                if (!data)  {
+                    throw new InternalServerErrorException('Database not populated');
+                }
+
+                if (err) {
+                    reject(err); 
+                 } else {
+                    resolve(JSON.parse(data));
+                 }
+                 
+            });
+
+        });
+
+        if (returnedData) {
+            return { data: returnedData };
+        }
+
+
     }
 
   

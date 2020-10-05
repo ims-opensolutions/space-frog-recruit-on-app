@@ -437,6 +437,29 @@
         let bySalarySelected = false;
         let byQualificationSelected = false;
 
+        let history = localStorage.getItem('pageStatus');
+        let pageStatus;
+
+        if (history !== null && history !== undefined) {
+            history = JSON.parse(history);
+            previousStates = history.previousStates;
+            pageStatus = history.pageStatus;
+            pageStateOnResults = pageStatus;
+            let index = 1;
+
+            for (const previousState of previousStates) {
+
+                if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) {
+                    window.history.pushState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+                    index++;
+                } else {
+                    window.history.pushState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
+                    index++;
+                }
+                
+            }
+        }
+
         let showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
 
         const byCityButton = document.querySelectorAll('button.by-city')[0];
@@ -882,7 +905,12 @@
                     console.log('damn clicked0);')
                     let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
                     userId = parseInt(clickedButtonClassName.split('r-')[1]);
+                    localStorage.setItem('pageStatus', JSON.stringify({
+                        previousStates: previousStates,
+                        pageStatus: pageStateOnResults
+                    }));
                     window.location = '/file-manager/map/' + userId;
+
                     /* container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                     container.innerHTML = '';
                     let mapContainer = document.createElement('div');
@@ -978,7 +1006,7 @@
         }; 
 
         const getEnabledFilters = () => {
-            return  {
+            return {
                 city: byCitySelected,
                 salary: bySalarySelected,
                 qualification: byQualificationSelected
