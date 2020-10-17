@@ -430,7 +430,7 @@
 
     <script>
 
-        let pageStateOnResults = 1;
+        let pageStateOnResults = 0;
         let previousStates = [];
         let firstLoading = true;
         let byCitySelected = false;
@@ -438,15 +438,15 @@
         let byQualificationSelected = false;
 
         let history = localStorage.getItem('pageStatus');
-        let pageStatus;
+        localStorage.removeItem('pageStatus');
 
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = history.previousStates;
-            pageStatus = history.pageStatus;
-            pageStateOnResults = pageStatus;
+            pageStateOnResults = pageStateOnResults;
             let index = 1;
 
+            console.log(previousStates);
             for (const previousState of previousStates) {
 
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) {
@@ -458,7 +458,12 @@
                 }
                 
             }
+
+            index++;
+            window.history.pushState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
         }
+
+        console.log(previousStates);
 
         let showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
 
@@ -527,9 +532,23 @@
             if (byCitySelected) enabledCity.style.opacity = '1'; else enabledCity.style.opacity = '0';
             if (bySalarySelected) enabledSalary.style.opacity = '1'; else enabledSalary.style.opacity = '0';
             if (byQualificationSelected) enabledQualification.style.opacity = '1'; else enabledQualification.style.opacity = '0';
-
+            console.log('At handling status');
+            console.log(byCitySelected);
+            console.log(bySalarySelected);
+            console.log(byQualificationSelected);
         }
 
+        if (previousStates && previousStates.length > 0) {
+            if (previousStates[previousStates.length - 1].hasOwnProperty('userId')) {
+                let lastFilteredState = previousStates[previousStates.length - 2];
+                console.log(lastFilteredState);
+                byCitySelected = lastFilteredState.city;
+                bySalarySelected = lastFilteredState.salary;
+                byQualificationSelected = lastFilteredState.qualification;
+                handleStatusIndicatorsStatus();
+            }
+        }
+        
         const handleQualificationColor = (qualification, element) => {
             if (parseInt(qualification) >= 8) {
                 element.classList.remove('yellow');
@@ -905,9 +924,15 @@
                     console.log('damn clicked0);')
                     let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
                     userId = parseInt(clickedButtonClassName.split('r-')[1]);
+                    pageStateOnResults++;
+                    previousStates.push({
+                        city: byCitySelected,
+                        salary: bySalarySelected,
+                        qualification: byQualificationSelected
+                    })
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
-                        pageStatus: pageStateOnResults
+                        pageStateOnResults: pageStateOnResults
                     }));
                     window.location = '/file-manager/map/' + userId;
 
@@ -997,12 +1022,23 @@
             let previousState = previousStates.pop();
             console.log(previousState);
 
-            byCitySelected = previousState.city ? true : false;
-            bySalarySelected = previousState.salary ? true : false;
-            byQualificationSelected = previousState.qualification ? true : false;
+            if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
+                byCitySelected = previousState.city ? true : false;
+                bySalarySelected = previousState.salary ? true : false;
+                byQualificationSelected = previousState.qualification ? true : false;
 
-            handleStatusIndicatorsStatus();     
-            triggerFilterRequest();
+                handleStatusIndicatorsStatus();    
+                triggerFilterRequest();
+            } else {
+                localStorage.setItem('pageStatus', JSON.stringify({
+                    previousStates: previousStates,
+                    pageStateOnResults: pageStateOnResults
+                }));
+                console.log('ke dise loco¡)');
+                console.log(previousStates);
+                {{!-- window.location = 'file-manager/map/' + previousState.userId; --}}
+            }
+
         }; 
 
         const getEnabledFilters = () => {

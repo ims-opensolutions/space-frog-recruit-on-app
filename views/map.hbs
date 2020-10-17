@@ -147,21 +147,20 @@
     <script>
         
         let userId = parseInt(window.location.pathname.match(/[0-9]/g).toString().replaceAll(',', ''));
-        let pageStateOnResults = 1;
+        let pageStateOnResults = 0;
 
         let history = localStorage.getItem('pageStatus');
+        localStorage.removeItem('pageStatus');
         let previousStates;
-        let pageStatus;
+        let index;
 
-        console.log(history);
+        console.log(JSON.parse(history));
 
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = history.previousStates;
-            console.log(previousStates);
-            pageStatus = history.pageStatus;
-            pageStateOnResults = pageStatus;
-            let index = 1;
+            pageStateOnResults = history.pageStateOnResults;
+            index = 1;
 
             for (const previousState of previousStates) {
 
@@ -174,6 +173,10 @@
                 }
                 
             }
+
+            index++;
+            window.history.pushState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + userId);
+        
         }
 
         let polyfillScript = document.createElement('script');
@@ -281,29 +284,23 @@
         let backButton = document.querySelector('div.dv-lvl-1.button-back');
         backButton.onclick = () => {
 
-            previousStates = previousStates.length > 1 ? previousStates : [];
-            console.log('DAMMMMN');
-            console.log(previousStates);
+            previousStates = previousStates.length > 0 ? previousStates : [];
 
-
-
-            if (previousStates !== null && previousStates !== undefined && pageStatus !== null && pageStatus !== undefined) {
-                let previousState = previousStates[previousStates.length - 1];
-
-                
+            if (previousStates.length > 0) {
                 previousStates.push({
                     userId: userId
                 });
-
-                localStorage.setItem('pageStatus', JSON.stringify({
-                    previousStates: JSON.stringify(previousStates),
-                    pageStatus: pageStateOnResults++
-                }));
-
-                window.location = '/file-manager/generate/';
-
-
             }
+            pageStateOnResults++;
+
+            localStorage.setItem('pageStatus', JSON.stringify({
+                previousStates: previousStates,
+                pageStateOnResults: pageStateOnResults
+            }));
+
+            window.location = 'http://localhost:3000/file-manager/generate';
+
+
         }
 
         {{!-- let backButton = document.querySelector('div.dv-lvl-1.button-back');
