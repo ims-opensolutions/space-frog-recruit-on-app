@@ -430,8 +430,9 @@
 
     <script>
 
-        let pageStateOnResults = 0;
+        let pageStateOnResults = 1;
         let previousStates = [];
+        let historyFiltered = false;
         let firstLoading = true;
         let byCitySelected = false;
         let bySalarySelected = false;
@@ -441,29 +442,39 @@
         localStorage.removeItem('pageStatus');
 
         if (history !== null && history !== undefined) {
+
+            
+
+            console.log()
+            console.log('surprise bitch');
             history = JSON.parse(history);
             previousStates = history.previousStates;
-            pageStateOnResults = pageStateOnResults;
+            pageStateOnResults = history.pageStateOnResults;
             let index = 1;
 
             console.log(previousStates);
             for (const previousState of previousStates) {
 
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) {
-                    window.history.pushState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+                    window.history.replaceState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+                    console.log('Populating history with filters');
+                    console.log(index);
                     index++;
                 } else {
-                    window.history.pushState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
+                    console.log('Populating history with user id for map');
+                    window.history.replaceState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
+                    console.log(index);
                     index++;
                 }
                 
             }
 
+            console.log('Last object on history to restore url');   
             index++;
-            window.history.pushState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+           // window.history.pushState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+            window.history.replaceState(null, null, '/file-manager/generate');  
         }
-
-        console.log(previousStates);
+       
 
         let showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
 
@@ -490,10 +501,9 @@
             previousStates.push(getEnabledFilters());
             console.log('__CURRENT STATE BEFORE SAVING');
             console.log(previousStates);
-
+            console.log(pageStateOnResults);
             window.history.pushState({ page: pageStateOnResults }, 'results-interaction-' + pageStateOnResults, '/file-manager/generate');
             pageStateOnResults++;
-            console.log(window.history);
 
             firstLoading = false;
 
@@ -532,19 +542,22 @@
             if (byCitySelected) enabledCity.style.opacity = '1'; else enabledCity.style.opacity = '0';
             if (bySalarySelected) enabledSalary.style.opacity = '1'; else enabledSalary.style.opacity = '0';
             if (byQualificationSelected) enabledQualification.style.opacity = '1'; else enabledQualification.style.opacity = '0';
-            console.log('At handling status');
-            console.log(byCitySelected);
-            console.log(bySalarySelected);
-            console.log(byQualificationSelected);
+            
         }
 
         if (previousStates && previousStates.length > 0) {
             if (previousStates[previousStates.length - 1].hasOwnProperty('userId')) {
                 let lastFilteredState = previousStates[previousStates.length - 2];
-                console.log(lastFilteredState);
                 byCitySelected = lastFilteredState.city;
                 bySalarySelected = lastFilteredState.salary;
                 byQualificationSelected = lastFilteredState.qualification;
+                handleStatusIndicatorsStatus();
+            } else {
+                let lastFilteredState = previousStates[previousStates.length - 1];
+                byCitySelected = lastFilteredState.city;
+                bySalarySelected = lastFilteredState.salary;
+                byQualificationSelected = lastFilteredState.qualification;
+                previousStates = previousStates.slice(0, previousStates.length - 1);
                 handleStatusIndicatorsStatus();
             }
         }
@@ -604,12 +617,8 @@
             xmlHttpRequest.send(JSON.stringify(filters));
 
             xmlHttpRequest.onload = () => {
-                console.log(xmlHttpRequest.readyState);
-                console.log(xmlHttpRequest.status);
                 if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
                     const response = JSON.parse(xmlHttpRequest.responseText);
-
-                    console.log(response)
 
                     let container;
                     let lastCity;
@@ -622,7 +631,6 @@
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                             container.innerHTML = '';
                             lastCity = 'none';
-                            console.log(response.object);
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city';
                             for (const candidate of response.object) {
                                 if (candidate.city !== lastCity) {
@@ -699,7 +707,6 @@
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                             container.innerHTML = '';
                             lastCity = 'none';
-                            console.log(response.object);
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city and salary';
                             for (const cityCandidates of response.object) {
                                 let currentCity = Object.keys(cityCandidates).toString();
@@ -743,7 +750,6 @@
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                             container.innerHTML = '';
                             lastCity = 'none';
-                            console.log(response.object);
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city and qualification';
                             for (const cityCandidates of response.object) {
                                 let currentCity = Object.keys(cityCandidates).toString();
@@ -787,7 +793,6 @@
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                             container.innerHTML = '';
                             lastCity = 'none';
-                            console.log(response.object);
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by salary';
                             for (const candidate of response.object) {
                                 let newInfoItem = document.createElement("div")
@@ -827,7 +832,6 @@
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                             container.innerHTML = '';
                             lastCity = 'none';
-                            console.log(response.object);
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by qualification';
                             for (const candidate of response.object) {
                                 let newInfoItem = document.createElement("div")
@@ -867,7 +871,6 @@
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
                             container.innerHTML = '';
                             lastCity = 'none';
-                            console.log(response.object);
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Unordered';
                             for (const candidate of response.object) {
                                 let newInfoItem = document.createElement("div")
@@ -919,12 +922,10 @@
         const setOnClickEvents = () => {
 
             showInMapButtons.forEach(showInMapButton => {
-                console.log('foreaching');
                 showInMapButton.onclick = (e) => {
-                    console.log('damn clicked0);')
                     let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
                     userId = parseInt(clickedButtonClassName.split('r-')[1]);
-                    pageStateOnResults++;
+                    console.log(pageStateOnResults);
                     previousStates.push({
                         city: byCitySelected,
                         salary: bySalarySelected,
@@ -958,65 +959,19 @@
 
         setOnClickEvents();
 
-        let map;
-
-        function initMap() {
-            map = new google.maps.Map(document.querySelectorAll("div.map-container")[0], {
-            center: {
-                lat: 48.113397,
-                lng: 15.670853
-            },
-            zoom: 4
-            });
-
-            const geocoder = new google.maps.Geocoder();
-
-            let xmlHttpRequest;
-
-            if (window.XMLHttpRequest) {
-                xmlHttpRequest = new XMLHttpRequest();
-            } else if (window.ActiveXObject) {
-                xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-
-            let filters;
-            xmlHttpRequest.onreadystatechange = () => {
-                filters = {
-                    'city' : true,
-                };
+        const getEnabledFilters = () => {
+            return {
+                city: byCitySelected,
+                salary: bySalarySelected,
+                qualification: byQualificationSelected
             };
-
-            xmlHttpRequest.open('POST', '/file-manager/render', true);
-
-            if (xmlHttpRequest.readyState > 0) {
-                xmlHttpRequest.setRequestHeader('Content-Type', 'application/json');
-            }
-
-            xmlHttpRequest.send(JSON.stringify(filters));
-
-            xmlHttpRequest.onload = () => {
-
-                if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
-                    const response = JSON.parse(xmlHttpRequest.responseText);
-
-                    let user = response.object.find(currentUser => userId === currentUser.id);
-
-                    geocoder.geocode({ address: user.city }, (results, status) => {
-                        if (status === "OK") {
-                            new google.maps.Marker({
-                                map: map,
-                                position: results[0].geometry.location
-                            });
-                        } else {
-                        alert("Geocode was not successful for the following reason: " + status);
-                        }
-                    });
-                }
-            }
-
         }
 
-        window.onpopstate = () => {
+        window.onpopstate = (e) => {
+
+            console.log('onpopstate');
+
+            console.log(history !== null && history !== undefined);
 
             console.log('__PREVIOUS STATE');
             let previousState = previousStates.pop();
@@ -1032,24 +987,49 @@
             } else {
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    pageStateOnResults: pageStateOnResults
+                    pageStateOnResults: pageStateOnResults,
                 }));
                 console.log('ke dise loco¡)');
                 console.log(previousStates);
                 {{!-- window.location = 'file-manager/map/' + previousState.userId; --}}
             }
 
-        }; 
+            historyFiltered = true;
 
-        const getEnabledFilters = () => {
-            return {
-                city: byCitySelected,
-                salary: bySalarySelected,
-                qualification: byQualificationSelected
-            };
         }
+        
+        window.onbeforeunload = (e) => {
 
-       
+            console.log('on before unload');
+            console.log(historyFiltered);
+            if (!historyFiltered) {
+            console.log('__PREVIOUS STATE');
+            let previousState = previousStates.pop();
+            console.log(previousState);
+
+            if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
+                byCitySelected = previousState.city ? true : false;
+                bySalarySelected = previousState.salary ? true : false;
+                byQualificationSelected = previousState.qualification ? true : false;
+
+                handleStatusIndicatorsStatus();    
+                triggerFilterRequest();
+            } else {
+                localStorage.setItem('pageStatus', JSON.stringify({
+                    previousStates: previousStates,
+                    pageStateOnResults: pageStateOnResults,
+                }));
+                console.log('ke dise loco¡)');
+                console.log(previousStates);
+                {{!-- window.location = 'file-manager/map/' + previousState.userId; --}}
+            }
+
+            }
+        };
+        
+
+
+
 
     </script>
 </body>

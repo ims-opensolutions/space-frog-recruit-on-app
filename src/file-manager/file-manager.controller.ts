@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Request } from 'express';
 import { Filter } from './entities/filter';
+import { request } from 'http';
 
 @Controller('file-manager')
 export class FileManagerController {
@@ -486,7 +487,10 @@ export class FileManagerController {
 
     @Get('generate')
     @Render('results')
-    async getCandidatesData() {
+    async getCandidatesData(@Req() request: Request) {
+
+        console.log(request);
+        console.log(request.headers['host']);
 
         const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
 

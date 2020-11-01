@@ -148,6 +148,7 @@
         
         let userId = parseInt(window.location.pathname.match(/[0-9]/g).toString().replaceAll(',', ''));
         let pageStateOnResults = 0;
+        let historyFiltered = false;
 
         let history = localStorage.getItem('pageStatus');
         localStorage.removeItem('pageStatus');
@@ -162,22 +163,31 @@
             pageStateOnResults = history.pageStateOnResults;
             index = 1;
 
+            console.log(previousStates);
+
             for (const previousState of previousStates) {
 
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) {
-                    window.history.pushState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+                    window.history.replaceState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+                    console.log('Populating history with filters');
                     index++;
                 } else {
-                    window.history.pushState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
+                    console.log('Populating history with user id for map');
+                    console.log(index);
+                    window.history.replaceState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
                     index++;
                 }
                 
             }
 
-            index++;
-            window.history.pushState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + userId);
+            console.log(pageStateOnResults);
+            console.log('Last object on history to restore url');
+            //window.history.pushState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + userId);
+            window.history.replaceState(null, null, '/file-manager/map/' + userId);
+
         
         }
+
 
         let polyfillScript = document.createElement('script');
         polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
@@ -244,7 +254,6 @@
                         let user = response.object.find(currentUser => userId === currentUser.id);
 
                         geocoder.geocode({ address: user.city }, (results, status) => {
-                            console.log(status);
                             if (status === "OK") {
                                 new google.maps.Marker({
                                     map: map,
@@ -292,6 +301,23 @@
                 });
             }
             pageStateOnResults++;
+            console.log(pageStateOnResults);
+            //window.history.pushState({ page: pageStateOnResults }, 'maps-interaction-' + pageStateOnResults, '/file-manager/map/' + userId);  
+
+            localStorage.setItem('pageStatus', JSON.stringify({
+                previousStates: previousStates,
+                pageStateOnResults: pageStateOnResults
+            }));
+
+           window.location = 'http://localhost:3000/file-manager/generate';
+
+        }
+
+        window.onpopstate = (e) => {
+
+            console.log('onpopstate');
+
+            previousStates = previousStates.length > 0 ? previousStates : [];
 
             localStorage.setItem('pageStatus', JSON.stringify({
                 previousStates: previousStates,
@@ -300,8 +326,27 @@
 
             window.location = 'http://localhost:3000/file-manager/generate';
 
+            historyFiltered = true;
 
         }
+        
+        window.onbeforeunload = () => {
+            console.log('on before unload');
+            if (!historyFiltered) {
+
+                console.log('on before unload');
+
+                previousStates = previousStates.length > 0 ? previousStates : [];
+
+                localStorage.setItem('pageStatus', JSON.stringify({
+                    previousStates: previousStates,
+                    pageStateOnResults: pageStateOnResults
+                }));
+
+                window.location = 'http://localhost:3000/file-manager/generate';
+
+            }
+        };
 
         {{!-- let backButton = document.querySelector('div.dv-lvl-1.button-back');
         let previousState = localStorage.getItem('filters');
@@ -323,4 +368,4 @@
 
     
 </body>
-</html>
+</html>     

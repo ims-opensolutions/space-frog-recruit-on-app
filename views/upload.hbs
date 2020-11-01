@@ -83,6 +83,12 @@
             display: none;
         }
 
+        p.par-lvl-4.error-message {
+            text-align: center;
+            color: #b43a3a;
+            display: none;
+        }
+
         form .process {
             margin: 10px auto;
             display: block;
@@ -188,6 +194,9 @@
                     <div class="dv-lvl-3 input-box">
                         <input class="process" type="submit" value="Process" />
                     </div>
+                     <div class="dv-lvl-3 input-box">
+                        <p class="par-lvl-4 error-message">You must upload a file</p>
+                    </div>
                     
                 </form>
             </div>
@@ -195,6 +204,44 @@
     </div>
 
     <script>
+
+        window.history.pushState(null, null, window.location.pathname + window.location.search);
+        let fileRecord = [];
+        
+        window.onload = () => {
+            console.log('Loading window... Setting fileRecord to empty');
+            fileRecord = [];
+            pageForm[1].value = '';
+        }
+
+        let pageForm = document.forms[0];
+
+        pageForm[1].onchange = () => {
+            let fileList = pageForm[1].files;
+            fileRecord = Array.from(fileList);
+            console.log('File uploaded... Generating file record');
+        }
+
+        console.log(fileRecord.length);
+        console.log(document.referrer); 
+
+        pageForm.onsubmit = (e) => {
+            e.preventDefault();
+            console.log('Submitting the form');
+            console.log(fileRecord.length);
+
+            if (fileRecord.length === 0) {
+                let errorMessage = document.querySelector('p.par-lvl-4.error-message');
+                errorMessage.style.display = 'block';
+            } else {
+                pageForm.submit();
+            }
+        }
+
+        window.onpopstate = () => {
+            console.log(fileRecord.length);
+        }
+
 
         let query = window.location.search;
 
