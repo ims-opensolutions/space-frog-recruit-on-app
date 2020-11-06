@@ -207,24 +207,35 @@
 
         window.history.pushState(null, null, window.location.pathname + window.location.search);
         let fileRecord = [];
+        let pageForm = document.forms[0];
+        let processButton = document.querySelector('input.excel-file');
+        let avoidAutomaticFileUpload = true;
+
+        pageForm[1].onchange = () => {
+            console.log('On change');
+            console.log(avoidAutomaticFileUpload);
+            if (!avoidAutomaticFileUpload) {
+                let fileList = pageForm[1].files;
+                if (pageForm[1].value !== '') {
+                    fileRecord = Array.from(fileList);
+                    console.log('File uploaded... Generating file record');
+                }
+            }
+        }
         
         window.onload = () => {
             console.log('Loading window... Setting fileRecord to empty');
             fileRecord = [];
-            pageForm[1].value = '';
         }
 
-        let pageForm = document.forms[0];
-
-        pageForm[1].onchange = () => {
-            let fileList = pageForm[1].files;
-            fileRecord = Array.from(fileList);
-            console.log('File uploaded... Generating file record');
+        processButton.onclick = () => {
+            pageForm[1].value = '';
+            console.log('Allowing upload of file on change');
+            avoidAutomaticFileUpload = false;
         }
 
         console.log(fileRecord.length);
-        console.log(document.referrer); 
-
+        
         pageForm.onsubmit = (e) => {
             e.preventDefault();
             console.log('Submitting the form');
@@ -241,7 +252,6 @@
         window.onpopstate = () => {
             console.log(fileRecord.length);
         }
-
 
         let query = window.location.search;
 
