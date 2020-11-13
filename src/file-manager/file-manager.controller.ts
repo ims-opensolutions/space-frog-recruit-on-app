@@ -489,8 +489,9 @@ export class FileManagerController {
     @Render('results')
     async getCandidatesData(@Req() request: Request) {
 
-        console.log(request);
-        console.log(request.headers['host']);
+        console.log('GET REQUEST');
+
+        console.log(request.headers.cookie);
 
         const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
 

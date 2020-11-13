@@ -430,6 +430,8 @@
 
     <script>
 
+        document.cookie = "_p= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+
         let pageStateOnResults = 1;
         let previousStates = [];
         let historyFiltered = false;
@@ -1000,6 +1002,9 @@
         
         window.onbeforeunload = (e) => {
 
+            let payload = 'YOURKEYHERE' + addAleatoryHash();
+            document.cookie = '_p=' + payload + ';';
+
             console.log('on before unload');
             console.log(historyFiltered);
             if (!historyFiltered) {
@@ -1007,7 +1012,7 @@
             let previousState = previousStates.pop();
             console.log(previousState);
 
-            if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
+            if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
                 byCitySelected = previousState.city ? true : false;
                 bySalarySelected = previousState.salary ? true : false;
                 byQualificationSelected = previousState.qualification ? true : false;
@@ -1026,6 +1031,37 @@
 
             }
         };
+
+        const addAleatoryHash = () => {
+            let hash = '';
+
+            const options = {
+                numbers : {
+                    min: 48,
+                    max: 58
+                },
+                upper: {
+                    min: 65,
+                    max: 91
+                },
+                lower: {
+                    min: 97,
+                    max: 123
+                }
+            };
+
+
+            for (let i = 0; i < 10; i++) {
+                const chars = ['numbers', 'upper', 'lower'];
+                let index = Math.floor(Math.random() * 3);
+                let max = options[chars[index]].max; 
+                let min = options[chars[index]].min;
+                let asciiCode = Math.floor(Math.random() * (max - min) + min);
+                let nextChar = String.fromCharCode(asciiCode);
+                hash += nextChar;
+            }
+            return hash;
+        }
         
 
 
