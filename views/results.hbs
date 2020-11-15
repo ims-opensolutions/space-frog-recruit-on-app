@@ -1002,6 +1002,8 @@
         
         window.onbeforeunload = (e) => {
 
+            console.log('ke dise creisi');
+
             let payload = 'YOURKEYHERE' + addAleatoryHash();
             document.cookie = '_p=' + payload + ';';
 
