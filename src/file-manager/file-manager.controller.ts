@@ -1,10 +1,10 @@
-import { Controller, Get, Render, Post, UseInterceptors, UploadedFile, BadRequestException, Body, Query, Param, Req, UseFilters, InternalServerErrorException, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Render, Post, UseInterceptors, UploadedFile, BadRequestException, Body, Query, Param, Req, UseFilters, InternalServerErrorException, ForbiddenException, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { Candidate } from './entities/candidate';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { Filter } from './entities/filter';
 
 
@@ -486,12 +486,12 @@ export class FileManagerController {
     }
 
     @Get('generate')
-    @Render('results')
-    async getCandidatesData(@Req() request: Request) {
+    async getCandidatesData(@Req() request: Request, @Res() res: Response) {
 
         console.log('GET REQUEST');
 
         const cookie = request.headers.cookie;
+        res.clearCookie('_p');  
 
         if (!cookie) {
             throw new ForbiddenException('Forbidden');
@@ -552,7 +552,11 @@ export class FileManagerController {
         });
 
         if (returnedData) {
-            return { data: returnedData };
+            console.log(request.headers);
+            return res.render(
+                'results',
+                { data: returnedData }
+              );
         }
 
 

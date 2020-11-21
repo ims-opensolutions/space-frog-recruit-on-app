@@ -1004,8 +1004,15 @@
 
             console.log('ke dise makena');
 
-            let payload = 'ewogICAgInJlZmVyZXIiOiAiL2ZpbGUtbWFuYWdlci9nZW5lcmF0ZSIsCiAgICAibWV0aG9kIjogIkdFVCIKfQ==' + addAleatoryHash();
-            document.cookie = '_p=' + payload + ';';
+            let payload = 'YOURKEYHERE' + addAleatoryHash();
+            var t = new Date();
+            let newDate = t.setSeconds(t.getSeconds() + 2);
+            let date = new Date(newDate);
+            document.cookie = '_p=' + payload + ';' + 'expires=' + date.toGMTString();
+
+            console.log(document.cookie);
+
+    
 
             console.log('on before unload');
             console.log(historyFiltered);
