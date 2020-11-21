@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Post, UseInterceptors, UploadedFile, BadRequestException, Body, Query, Param, Req, UseFilters, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Render, Post, UseInterceptors, UploadedFile, BadRequestException, Body, Query, Param, Req, UseFilters, InternalServerErrorException, ForbiddenException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { Candidate } from './entities/candidate';
@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Request } from 'express';
 import { Filter } from './entities/filter';
-import { request } from 'http';
+
 
 @Controller('file-manager')
 export class FileManagerController {
@@ -491,7 +491,41 @@ export class FileManagerController {
 
         console.log('GET REQUEST');
 
-        console.log(request.headers.cookie);
+        const cookie = request.headers.cookie;
+
+        if (!cookie) {
+            throw new ForbiddenException('Forbidden');
+        }
+
+        const regExpResult = cookie.match(/(_p=[^;]*;?){1}/g);
+
+        if (!regExpResult) {
+            throw new ForbiddenException('Forbidden');
+        }
+
+        let payload = regExpResult.toString();
+    
+        const key = payload.substring(3, payload.length - 10);
+
+        if (!key || key.length === 0) {
+            throw new ForbiddenException('Forbidden');
+        }
+        
+        const credentials = Buffer.from(key, 'base64').toString('ascii');
+
+        let credentialsObject;
+        try {   
+            credentialsObject = JSON.parse(credentials);
+        } catch(err) {
+            console.log(err);
+            throw new ForbiddenException('Forbidden');
+        }
+
+        if (!credentialsObject || !credentialsObject.hasOwnProperty('referer') || !credentialsObject.hasOwnProperty('method')) {
+            throw new ForbiddenException('Forbidden');
+        }
+
+        console.log(credentialsObject);
 
         const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
 
