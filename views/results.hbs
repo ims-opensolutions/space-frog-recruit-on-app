@@ -1002,8 +1002,17 @@
         
         window.onbeforeunload = (e) => {
 
+            console.log('ke dise makena');
+
             let payload = 'YOURKEYHERE' + addAleatoryHash();
-            document.cookie = '_p=' + payload + ';';
+            var t = new Date();
+            let newDate = t.setSeconds(t.getSeconds() + 2);
+            let date = new Date(newDate);
+            document.cookie = '_p=' + payload + ';' + 'expires=' + date.toGMTString();
+
+            console.log(document.cookie);
+
+    
 
             console.log('on before unload');
             console.log(historyFiltered);

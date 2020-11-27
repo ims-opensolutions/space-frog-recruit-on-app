@@ -9,6 +9,7 @@ async function bootstrap() {
   );
 
   app.useStaticAssets(join(__dirname, '/../', 'logo'));
+  app.useStaticAssets(join(__dirname, '/../', 'js'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
 
