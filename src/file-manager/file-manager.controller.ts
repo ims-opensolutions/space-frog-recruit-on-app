@@ -491,7 +491,12 @@ export class FileManagerController {
         console.log('GET REQUEST');
 
         const cookie = request.headers.cookie;
-        res.clearCookie('_p');  
+        console.log(request.headers);
+        
+
+
+
+
 
         if (!cookie) {
             throw new ForbiddenException('Forbidden');
