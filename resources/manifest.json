@@ -13,8 +13,9 @@
     ],
     "background": {
         "scripts": [
-            "background.js"
+            "background.js",
+            "buffer.js"
         ]
     },
-    "manifest_version": 2
+    "manifest_version": 2 
 }

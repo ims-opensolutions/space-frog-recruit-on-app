@@ -84,6 +84,7 @@ export class FileManagerController {
     //                 });
     //             }
     //         }
+    
 
     //     }
     //     } else {
@@ -95,7 +96,7 @@ export class FileManagerController {
     @Render('results')
     @UseInterceptors(FileInterceptor('excel-file'))
     async generateResults(@UploadedFile() file) {
-
+    
         const data = new Uint8Array(file.buffer);
         const workbook = XLSX.read(data, { type: 'array' });
 
@@ -264,7 +265,6 @@ export class FileManagerController {
         if (returnedData) {
             return { data: returnedData };
         }
-        
 
         // 3 - Writing candidates items on a local JSON "database"
         // const candidatesToJson = JSON.stringify(candidates);
@@ -488,15 +488,7 @@ export class FileManagerController {
     @Get('generate')
     async getCandidatesData(@Req() request: Request, @Res() res: Response) {
 
-        console.log('GET REQUEST');
-
         const cookie = request.headers.cookie;
-        console.log(request.headers);
-        
-
-
-
-
 
         if (!cookie) {
             throw new ForbiddenException('Forbidden');
@@ -564,8 +556,6 @@ export class FileManagerController {
               );
         }
 
-
     }
-
   
 }
