@@ -1,0 +1,21 @@
+{
+    "name": "RecruitOnHttpInterceptor",
+    "version": "1.0",
+    "description": "Security app extension for RecruitOn app",
+    "permissions": [
+        "activeTab",
+        "background",
+        "contextMenus",
+        "cookies",
+        "webRequest",
+        "webRequestBlocking",
+        "http://localhost:3000/file-manager/generate"
+    ],
+    "background": {
+        "scripts": [
+            "background.js",
+            "buffer.js"
+        ]
+    },
+    "manifest_version": 2 
+}

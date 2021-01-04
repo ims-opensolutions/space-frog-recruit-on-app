@@ -1,0 +1,36 @@
+{
+    "GET": {
+        "generate": {
+            "resource": "http://localhost:3000/file-manager/generate",
+            "method": "GET"
+        },
+        "map": {
+            "resource": "http://localhost:3000/file-manager/map/*",
+            "method": "GET"
+        }
+    },
+    "POST": {
+        "generate": {
+            "resource": "http://localhost:3000/file-manager/generate",
+            "method": "POST",
+            "requestBody": {
+                "raw": [
+                    { "bytes" : {} },
+                    { "file": "filename" },
+                    { "bytes": {} }
+                ]
+            }
+        },
+        "render": {
+            "resource": "http://localhost:3000/file-manager/render",
+            "method": "POST",
+            "requestBody": {
+                "raw": [
+                    { "bytes" : {} },
+                    { "file": "filename" },
+                    { "bytes": {} }
+                ]
+            }
+        }   
+    }
+  }
