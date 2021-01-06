@@ -289,6 +289,8 @@ export class FileManagerController {
     @Post('render')
     async renderResults(@Body() filters: Filter) { 
 
+        console.log(filters);
+
         let dataToView = {};
         const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
 

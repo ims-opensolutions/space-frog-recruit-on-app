@@ -65,6 +65,8 @@ export class FileManagerMiddleware implements NestMiddleware {
                 console.log('Decrypting...');
                 const decryptedString = new TextDecoder().decode(new Uint8Array(response));
                 const decryptedJSON = JSON.parse(decryptedString);
+
+                console.log(decryptedJSON);
                 
                 const requestedResource = config[method][endpoint];
 

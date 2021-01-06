@@ -623,12 +623,21 @@
                 if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 201) {
                     const response = JSON.parse(xmlHttpRequest.responseText);
 
+                    // Global variables for html generation
                     let container;
                     let lastCity;
                     let infoModelItemNode = document.querySelectorAll('div.dv-lvl-2.recruiter-result-item')[0];
                     let modeAndQuantityIndicator = document.querySelectorAll('div.dv-lvl-1.recruiter-result-banner p')[0];
                     let quantity = document.querySelectorAll('div.dv-lvl-2.recruiter-result-item').length;
 
+                    // Switch for selecting the filtering mode
+                    
+                    // 1. city
+                    // 2. city/salary
+                    // 3. city/qualification
+                    // 4. salary
+                    // 5. qualification
+                    // 6. initial
                     switch (response.mode) {
                         case 'city':
                             container = document.querySelectorAll('div.dv-lvl-1.recruiter-result-items-container')[0];
@@ -636,8 +645,11 @@
                             lastCity = 'none';
                             modeAndQuantityIndicator.innerText = 'Showing results: ' + quantity + '. Ordered by city';
                             for (const candidate of response.object) {
+
+
                                 if (candidate.city !== lastCity) {
                                     let newInfoItem = document.createElement("div")
+
                                     newInfoItem.className = infoModelItemNode.className + ' city-filtered-' + candidate.id;
                                     newInfoItem.innerHTML = infoModelItemNode.innerHTML;
                                     container.innerHTML += "<h2 class=\"he-lvl-2 recruiter-city-item-header\">" + candidate.city + "</h2>";
@@ -648,6 +660,9 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+                                    
+                                    const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                    newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
                                     
                                     let showMapIndex = 0;
                                     showInMapButtons.forEach(
@@ -668,7 +683,7 @@
 
                                     handleQualificationColor(candidate.qualification, qualificationNode.parentElement);
                                     container.appendChild(newInfoItem);
-                                    container.appendChild(showMapNode)
+                                    container.appendChild(showMapNode);
                                     lastCity = candidate.city;
                                 } else {
                                     let newInfoItem = document.createElement("div")
@@ -681,6 +696,9 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+
+                                    const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                    newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
                                     
                                     let showMapIndex = 0;
                                     showInMapButtons.forEach(
@@ -725,6 +743,9 @@
                                     let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+
+                                    const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                    newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
                                     
                                     let showMapIndex = 0;
                                     showInMapButtons.forEach(
@@ -769,6 +790,9 @@
                                     let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                     let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
                                     
+                                    const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                    newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
+
                                     let showMapIndex = 0;
                                     showInMapButtons.forEach(
                                         (currentShowMapNode, index) => {
@@ -808,7 +832,10 @@
                                 let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                 let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                 let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
-                                
+
+                                const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
+
                                 let showMapIndex = 0;
                                 showInMapButtons.forEach(
                                     (currentShowMapNode, index) => {
@@ -848,6 +875,9 @@
                                 let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                 let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
                                 
+                                const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
+                                
                                 let showMapIndex = 0;
                                 showInMapButtons.forEach(
                                     (currentShowMapNode, index) => {
@@ -886,6 +916,9 @@
                                 let ageNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-age')[0];
                                 let salaryNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-salary')[0];
                                 let qualificationNode = newInfoItem.querySelectorAll('div.' + newInfoItem.className.replace(/\s/g, ".") + ' p.p-qualification')[0];
+
+                                const cityClassNameRegExpString = newInfoItem.className.match(/([\s]?city-filtered-[0-9]){1,}/g).toString();
+                                newInfoItem.className = newInfoItem.className.replaceAll(new RegExp(cityClassNameRegExpString, 'g'), '');
                                 
                                 let showMapIndex = 0;
                                 showInMapButtons.forEach(
@@ -1003,7 +1036,7 @@
         
         window.onbeforeunload = (e) => {
 
-            let payload = 'encoded64here' + addAleatoryHash();
+            let payload = 'base64encodehere' + addAleatoryHash();
             var t = new Date();
             let newDate = t.setSeconds(t.getSeconds() + 2);
             let date = new Date(newDate);
