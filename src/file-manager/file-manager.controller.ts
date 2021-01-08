@@ -490,41 +490,41 @@ export class FileManagerController {
     @Get('generate')
     async getCandidatesData(@Req() request: Request, @Res() res: Response) {
 
-        const cookie = request.headers.cookie;
+        // const cookie = request.headers.cookie;
 
-        if (!cookie) {
-            throw new ForbiddenException('Forbidden');
-        }
+        // if (!cookie) {
+        //     throw new ForbiddenException('Forbidden');
+        // }
 
-        const regExpResult = cookie.match(/(_p=[^;]*;?){1}/g);
+        // const regExpResult = cookie.match(/(_p=[^;]*;?){1}/g);
 
-        if (!regExpResult) {
-            throw new ForbiddenException('Forbidden');
-        }
+        // if (!regExpResult) {
+        //     throw new ForbiddenException('Forbidden');
+        // }
 
-        let payload = regExpResult.toString();
+        // let payload = regExpResult.toString();
     
-        const key = payload.substring(3, payload.length - 10);
+        // const key = payload.substring(3, payload.length - 10);
 
-        if (!key || key.length === 0) {
-            throw new ForbiddenException('Forbidden');
-        }
+        // if (!key || key.length === 0) {
+        //     throw new ForbiddenException('Forbidden');
+        // }
         
-        const credentials = Buffer.from(key, 'base64').toString('ascii');
+        // const credentials = Buffer.from(key, 'base64').toString('ascii');
 
-        let credentialsObject;
-        try {   
-            credentialsObject = JSON.parse(credentials);
-        } catch(err) {
-            console.log(err);
-            throw new ForbiddenException('Forbidden');
-        }
+        // let credentialsObject;
+        // try {   
+        //     credentialsObject = JSON.parse(credentials);
+        // } catch(err) {
+        //     console.log(err);
+        //     throw new ForbiddenException('Forbidden');
+        // }
 
-        if (!credentialsObject || !credentialsObject.hasOwnProperty('referer') || !credentialsObject.hasOwnProperty('method')) {
-            throw new ForbiddenException('Forbidden');
-        }
+        // if (!credentialsObject || !credentialsObject.hasOwnProperty('referer') || !credentialsObject.hasOwnProperty('method')) {
+        //     throw new ForbiddenException('Forbidden');
+        // }
 
-        console.log(credentialsObject);
+        // console.log(credentialsObject);
 
         const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
 
