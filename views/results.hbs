@@ -591,10 +591,19 @@
         // Handles actions on clicks
         const handleFilterClick = (e) => {
 
-            previousStates.push(getEnabledFilters());
-            window.history.pushState({ page: pageStateOnResults }, 'results-interaction-' + pageStateOnResults, '/file-manager/generate');
-            pageStateOnResults++;
+            if (lastSavedState > 0 && lastSavedState < previousStates.length - 1) {
+                console.log('Replacing state on click');
+                console.log('Last saved state was: ' + lastSavedState + '. Saving next');
+                lastSavedState++;
+                window.history.go(1);
+                historyOp = 'replace';
+            } else {
+                console.log('Pushing new state on click');
+                window.history.pushState({ page: previousStates.length }, 'results-interaction-' + previousStates.length, '/file-manager/generate');
+                historyOp = 'regular';
+            }
 
+            
             firstLoading = false;
 
             const buttonKeys = ['city', 'salary', 'qualification'];
@@ -614,6 +623,20 @@
                     bySalarySelected = false;
                 }
             });
+
+            if (lastSavedState > 0 && lastSavedState < previousStates.length) {
+                console.log('Replacing value of previousStates array on index ' + lastSavedState);
+                previousStates[lastSavedState] = getEnabledFilters();
+                console.log('New values for this index are:');
+                console.log(previousStates[lastSavedState]);
+            } else {
+                console.log('Pushing new filters object');
+                previousStates.push(getEnabledFilters());
+                if (lastSavedState !== 0) {
+                    lastSavedState++;
+                }
+            }
+            
 
             handleStatusIndicatorsStatus();
             triggerFilterRequest();
@@ -655,12 +678,12 @@
                         city: byCitySelected,
                         salary: bySalarySelected,
                         qualification: byQualificationSelected
-                    })
+                    });
 
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates,
-                        pageStateOnResults: pageStateOnResults
+                        previousStates: previousStates
                     }));
+
 
                     window.location = '/file-manager/map/' + userId;
 
@@ -761,7 +784,7 @@
 
         // Sets the cookie to authorize request
         const setSecurityCookie = () => {
-            let payload = 'ewogICAgInJlZmVyZXIiOiAiL2ZpbGUtbWFuYWdlci9nZW5lcmF0ZSIsCiAgICAibWV0aG9kIjogIkdFVCIKfQ==' + addAleatoryHash();
+            let payload = 'encodedhere' + addAleatoryHash();
             var currentTime = new Date();
             let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
             let newDateObject = new Date(newDate);
@@ -785,6 +808,8 @@
                     previousStates = previousStates.slice(0, previousStates.length - 1);
                     handleStatusIndicatorsStatus();
                 }
+            } else {
+                previousStates.push(getEnabledFilters());
             }
         }
 
@@ -825,7 +850,9 @@
         document.cookie = "_p= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
         // Global variables
-        let pageStateOnResults = 1;
+        let lastSavedState = 0;
+        let requestedStateIndex = 0;
+        let historyOp = 'regular';
         let previousStates = [];
         let historyFiltered = false;
         let firstLoading = true;
@@ -841,7 +868,6 @@
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = history.previousStates;
-            pageStateOnResults = history.pageStateOnResults;
             let index = 1;
 
             console.log('Showing previous states: ');
@@ -862,7 +888,7 @@
             }
 
             console.log('Last object on history to restore url');   
-            window.history.replaceState(null, null, '/file-manager/generate');  
+            window.history.replaceState(null, null, '/file-manager/generate'); 
         }
 
         // Original buttons for filters
@@ -887,9 +913,63 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
-            console.log('Executing onpopstate');
-            let previousState = previousStates.pop();
-            console.log(previousState);
+            // 0 indicates initial state
+            if (lastSavedState === 0) {
+                lastSavedState = previousStates.length - 1; // Page status is one less than array length
+            }
+
+            let previousState;
+
+            if (window.history.state) {
+
+                switch (historyOp) {
+                    case 'replace':
+                        console.log('Current window page: ' + window.history.state.page);
+                        console.log('Last saved state: ' + lastSavedState);
+
+                        console.log('Replacing state number ' + lastSavedState + ' on history object');
+                        window.history.replaceState({ page: lastSavedState }, 'results-interaction-' + lastSavedState, '/file-manager/generate');
+
+                        historyOp = 'regular';
+                    break;
+                    case 'regular':
+
+                        // If current state is greater than previous one, navigation is forward
+                        if (window.history.state.page > lastSavedState) {
+                            console.log('Forward navigation');
+
+                            requestedStateIndex = lastSavedState + 1;
+                            console.log('Requesting state on index: ' + requestedStateIndex);
+                        // If current state is minor than previous one, navigation is back
+                        } else {
+                            console.log('Back navigation');
+
+                            requestedStateIndex = lastSavedState - 1;
+                            console.log('Requesting state on index: ' + requestedStateIndex);
+                        }
+
+                        previousState = previousStates[requestedStateIndex];
+                        console.log('Page status: ' + requestedStateIndex);
+                        console.log('Values for state:');
+                        console.log(previousState);
+
+                        lastSavedState = window.history.state.page;
+                    break;
+                }
+
+                
+
+
+            } else {
+                if (lastSavedState === 1) {
+                    lastSavedState = 0;
+                    requestedStateIndex = 0;
+                    previousState = previousStates[requestedStateIndex];
+                    console.log('Page status: ' + requestedStateIndex);
+                    console.log('Values for state:');
+                    console.log(previousState);
+                }
+            }
 
             if (previousState !== undefined) {
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
@@ -901,8 +981,7 @@
                     triggerFilterRequest();
                 } else {
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates,
-                        pageStateOnResults: pageStateOnResults,
+                        previousStates: previousStates
                     }));
                 }
             }
@@ -914,6 +993,7 @@
         
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
+            console.log('Executing onbeforeunload');
 
             setSecurityCookie();
     
@@ -931,8 +1011,7 @@
                         triggerFilterRequest();
                     } else {
                         localStorage.setItem('pageStatus', JSON.stringify({
-                            previousStates: previousStates,
-                            pageStateOnResults: pageStateOnResults,
+                            previousStates: previousStates
                         }));
                     }
                 }
