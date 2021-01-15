@@ -429,6 +429,19 @@
 
     <script>
 
+        if (window.history.state && window.history.state.page) {
+            const pageStateLimit = window.history.state.page;
+
+            let index = 1;
+            while (index <= pageStateLimit) {
+
+                console.log(window.history.state);
+                console.log('Replacing states on...' + index);
+                //window.history.replaceState({ page: null }, 'results-interaction-' + index, '/file-manager/generate');
+                index++;
+            }
+        }
+
         // Functions declarations
 
         // Get filter current status
@@ -583,8 +596,7 @@
                     }
                     showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
                     setOnShowMapClickEvents();
-<<<<<<< HEAD
-=======
+
                 }
             }
 
@@ -593,10 +605,15 @@
         // Handles actions on clicks
         const handleFilterClick = (e) => {
 
-            if (lastSavedState > 0 && lastSavedState < previousStates.length - 1) {
+            if (lastSavedState > 0 && lastSavedState < previousStates.length - 1 || lastSavedState === -1 && previousStates.length > 1) {
                 console.log('Replacing state on click');
-                console.log('Last saved state was: ' + lastSavedState + '. Saving next');
-                lastSavedState++;
+
+                if (lastSavedState === -1) {
+                    console.log('Last saved state was: 0. Saving next');
+                } else {
+                    console.log('Last saved state was: ' + lastSavedState + '. Saving next');
+                }
+
                 window.history.go(1);
                 historyOp = 'replace';
             } else {
@@ -604,7 +621,6 @@
                 window.history.pushState({ page: previousStates.length }, 'results-interaction-' + previousStates.length, '/file-manager/generate');
                 historyOp = 'regular';
             }
-
             
             firstLoading = false;
 
@@ -626,59 +642,29 @@
                 }
             });
 
-            if (lastSavedState > 0 && lastSavedState < previousStates.length) {
+            if (lastSavedState === 0 || (lastSavedState > 0 && lastSavedState === previousStates.length - 1)) {
+                console.log('Saving current filters');
+                previousStates.push(getEnabledFilters());
+                if (lastSavedState !== 0) {
+                    lastSavedState++;
+                }
+            } else {
+
+                if (lastSavedState === -1) {
+                    lastSavedState = 0;
+                }
+
+                lastSavedState++;
                 console.log('Replacing value of previousStates array on index ' + lastSavedState);
                 previousStates[lastSavedState] = getEnabledFilters();
                 console.log('New values for this index are:');
                 console.log(previousStates[lastSavedState]);
-            } else {
-                console.log('Pushing new filters object');
-                previousStates.push(getEnabledFilters());
-                if (lastSavedState !== 0) {
-                    lastSavedState++;
->>>>>>> d3c4aecf97474ba42b4980b7db4aa5cc597a1fa2
-                }
             }
             
-
             handleStatusIndicatorsStatus();
             triggerFilterRequest();
         };
 
-<<<<<<< HEAD
-        // Handles actions on clicks
-        const handleFilterClick = (e) => {
-
-            previousStates.push(getEnabledFilters());
-            window.history.pushState({ page: pageStateOnResults }, 'results-interaction-' + pageStateOnResults, '/file-manager/generate');
-            pageStateOnResults++;
-
-            firstLoading = false;
-
-            const buttonKeys = ['city', 'salary', 'qualification'];
-
-            buttonKeys.forEach(currentKey => {
-                if (e.target.className.indexOf('city') > -1) {
-                    byCitySelected = !byCitySelected;
-                }
-
-                if (e.target.className.indexOf('salary') > -1) {
-                    bySalarySelected = !bySalarySelected;
-                    byQualificationSelected = false;
-                }
-
-                if (e.target.className.indexOf('qualification') > -1) {
-                    byQualificationSelected = !byQualificationSelected;
-                    bySalarySelected = false;
-                }
-            });
-
-            handleStatusIndicatorsStatus();
-            triggerFilterRequest();
-        };
-
-=======
->>>>>>> d3c4aecf97474ba42b4980b7db4aa5cc597a1fa2
         // Controls qualification panel color changes
         const handleQualificationColor = (qualification, element) => {
             if (parseInt(qualification) >= 8) {
@@ -715,20 +701,13 @@
                         city: byCitySelected,
                         salary: bySalarySelected,
                         qualification: byQualificationSelected
-<<<<<<< HEAD
-                    })
-=======
+
                     });
->>>>>>> d3c4aecf97474ba42b4980b7db4aa5cc597a1fa2
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates
                     }));
 
-<<<<<<< HEAD
-=======
-
->>>>>>> d3c4aecf97474ba42b4980b7db4aa5cc597a1fa2
                     window.location = '/file-manager/map/' + userId;
 
                 };
@@ -959,9 +938,13 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
+            console.log(window.history.state);
+
             // 0 indicates initial state
             if (lastSavedState === 0) {
                 lastSavedState = previousStates.length - 1; // Page status is one less than array length
+            } else if (lastSavedState === -1 && window.history.state && window.history.state.page === 1) {
+                lastSavedState = 0;
             }
 
             let previousState;
@@ -1007,8 +990,9 @@
 
 
             } else {
+                
                 if (lastSavedState === 1) {
-                    lastSavedState = 0;
+                    lastSavedState = -1;
                     requestedStateIndex = 0;
                     previousState = previousStates[requestedStateIndex];
                     console.log('Page status: ' + requestedStateIndex);
@@ -1016,7 +1000,6 @@
                     console.log(previousState);
                 }
             }
->>>>>>> d3c4aecf97474ba42b4980b7db4aa5cc597a1fa2
 
             if (previousState !== undefined) {
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
