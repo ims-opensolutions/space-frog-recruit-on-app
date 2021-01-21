@@ -417,8 +417,6 @@
                 {{/if}}
 
 
-                {{!-- {{> partialTemplate website="sitepoint"}} <br> --}}
-
 
             </div>
 
@@ -428,6 +426,19 @@
     </div>
 
     <script>
+
+        window.history.reload
+        let state = localStorage.getItem('pageStatus');
+        console.log(state);
+        if (!state) {
+            const pageStateLimit = window.history.state ? window.history.state.page : null;
+
+            if (pageStateLimit) {
+                console.log('Clearing browser history');
+                window.history.go(-(pageStateLimit));
+            }
+        
+        }
 
         // Functions declarations
 
@@ -583,6 +594,7 @@
                     }
                     showInMapButtons = document.querySelectorAll('div.dv-lvl-2.show-in-map');
                     setOnShowMapClickEvents();
+
                 }
             }
 
@@ -591,10 +603,15 @@
         // Handles actions on clicks
         const handleFilterClick = (e) => {
 
-            if (lastSavedState > 0 && lastSavedState < previousStates.length - 1) {
+            if (lastSavedState > 0 && lastSavedState < previousStates.length - 1 || lastSavedState === -1 && previousStates.length > 1) {
                 console.log('Replacing state on click');
-                console.log('Last saved state was: ' + lastSavedState + '. Saving next');
-                lastSavedState++;
+
+                if (lastSavedState === -1) {
+                    console.log('Last saved state was: 0. Saving next');
+                } else {
+                    console.log('Last saved state was: ' + lastSavedState + '. Saving next');
+                }
+
                 window.history.go(1);
                 historyOp = 'replace';
             } else {
@@ -602,7 +619,6 @@
                 window.history.pushState({ page: previousStates.length }, 'results-interaction-' + previousStates.length, '/file-manager/generate');
                 historyOp = 'regular';
             }
-
             
             firstLoading = false;
 
@@ -624,20 +640,25 @@
                 }
             });
 
-            if (lastSavedState > 0 && lastSavedState < previousStates.length) {
-                console.log('Replacing value of previousStates array on index ' + lastSavedState);
-                previousStates[lastSavedState] = getEnabledFilters();
-                console.log('New values for this index are:');
-                console.log(previousStates[lastSavedState]);
-            } else {
-                console.log('Pushing new filters object');
+            if (lastSavedState === 0 || (lastSavedState > 0 && lastSavedState === previousStates.length - 1)) {
+                console.log('Saving current filters');
                 previousStates.push(getEnabledFilters());
                 if (lastSavedState !== 0) {
                     lastSavedState++;
                 }
+            } else {
+
+                if (lastSavedState === -1) {
+                    lastSavedState = 0;
+                }
+
+                lastSavedState++;
+                console.log('Replacing value of previousStates array on index ' + lastSavedState);
+                previousStates[lastSavedState] = getEnabledFilters();
+                console.log('New values for this index are:');
+                console.log(previousStates[lastSavedState]);
             }
             
-
             handleStatusIndicatorsStatus();
             triggerFilterRequest();
         };
@@ -678,12 +699,12 @@
                         city: byCitySelected,
                         salary: bySalarySelected,
                         qualification: byQualificationSelected
+
                     });
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates
                     }));
-
 
                     window.location = '/file-manager/map/' + userId;
 
@@ -784,6 +805,7 @@
 
         // Sets the cookie to authorize request
         const setSecurityCookie = () => {
+
             let payload = 'encodedhere' + addAleatoryHash();
             var currentTime = new Date();
             let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
@@ -808,6 +830,7 @@
                     previousStates = previousStates.slice(0, previousStates.length - 1);
                     handleStatusIndicatorsStatus();
                 }
+
             } else {
                 previousStates.push(getEnabledFilters());
             }
@@ -888,7 +911,7 @@
             }
 
             console.log('Last object on history to restore url');   
-            window.history.replaceState(null, null, '/file-manager/generate'); 
+            window.history.replaceState({ page: index }, null, '/file-manager/generate'); 
         }
 
         // Original buttons for filters
@@ -913,9 +936,15 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
+console.log(e);
+console.log(e.currentTarget.performance.navigation.type);
+            console.log('Executing onpopstate');
+
             // 0 indicates initial state
             if (lastSavedState === 0) {
                 lastSavedState = previousStates.length - 1; // Page status is one less than array length
+            } else if (lastSavedState === -1 && window.history.state && window.history.state.page === 1) {
+                lastSavedState = 0;
             }
 
             let previousState;
@@ -961,8 +990,9 @@
 
 
             } else {
+                
                 if (lastSavedState === 1) {
-                    lastSavedState = 0;
+                    lastSavedState = -1;
                     requestedStateIndex = 0;
                     previousState = previousStates[requestedStateIndex];
                     console.log('Page status: ' + requestedStateIndex);
@@ -993,30 +1023,53 @@
         
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
+
             console.log('Executing onbeforeunload');
-
-            setSecurityCookie();
-    
-            if (!historyFiltered) {
-
-            let previousState = previousStates.pop();
-
-                if (previousState !== undefined) {
-                    if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
-                        byCitySelected = previousState.city ? true : false;
-                        bySalarySelected = previousState.salary ? true : false;
-                        byQualificationSelected = previousState.qualification ? true : false;
-
-                        handleStatusIndicatorsStatus();    
-                        triggerFilterRequest();
-                    } else {
-                        localStorage.setItem('pageStatus', JSON.stringify({
-                            previousStates: previousStates
-                        }));
-                    }
-                }
-
+            console.log(e);
+            console.log(e.currentTarget.performance.navigation);
+            console.log(e.currentTarget.performance.eventCounts.values());
+            const d = e.currentTarget.performance.eventCounts.values();
+            for (let e of d) {
+                console.log('eee' + ': ' + e)
             }
+            console.log(e.currentTarget.performance.getEntries());
+            return false;
+            const navigationType = e.currentTarget.performance.navigation.type; 
+
+            
+            console.log(navigationType);
+
+
+            if (navigationType !== 1) {
+                
+                console.log('Keeping history');
+
+                setSecurityCookie();
+        
+                if (!historyFiltered) {
+
+                let previousState = previousStates.pop();
+
+                    if (previousState !== undefined) {
+                        if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
+                            byCitySelected = previousState.city ? true : false;
+                            bySalarySelected = previousState.salary ? true : false;
+                            byQualificationSelected = previousState.qualification ? true : false;
+
+                            handleStatusIndicatorsStatus();    
+                            triggerFilterRequest();
+                        } else {
+                            localStorage.setItem('pageStatus', JSON.stringify({
+                                previousStates: previousStates
+                            }));
+                        }
+                    }
+
+                }
+            } else {
+                console.log('Reloading page. Clearing history');
+            }
+
         };
 
     </script>
