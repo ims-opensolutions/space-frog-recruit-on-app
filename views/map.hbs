@@ -202,7 +202,8 @@
                 }
 
                 localStorage.setItem('pageStatus', JSON.stringify({
-                    previousStates: previousStates
+                    previousStates: previousStates,
+                    saveData: true
                 }));
 
                 window.location = 'http://localhost:3000/file-manager/generate';
@@ -337,7 +338,8 @@
                 previousStates = previousStates.length > 0 ? previousStates : [];
 
                 localStorage.setItem('pageStatus', JSON.stringify({
-                    previousStates: previousStates
+                    previousStates: previousStates,
+                    saveData: true
                 }));
 
                 window.location = 'http://localhost:3000/file-manager/generate';

@@ -417,8 +417,6 @@
                 {{/if}}
 
 
-                {{!-- {{> partialTemplate website="sitepoint"}} <br> --}}
-
 
             </div>
 
@@ -429,6 +427,7 @@
 
     <script>
 
+<<<<<<< HEAD
         if (window.history.state && window.history.state.page) {
             const pageStateLimit = window.history.state.page;
 
@@ -440,6 +439,19 @@
                 //window.history.replaceState({ page: null }, 'results-interaction-' + index, '/file-manager/generate');
                 index++;
             }
+=======
+        window.history.reload
+        let state = localStorage.getItem('pageStatus');
+        console.log(state);
+        if (!state) {
+            const pageStateLimit = window.history.state ? window.history.state.page : null;
+
+            if (pageStateLimit) {
+                console.log('Clearing browser history');
+                window.history.go(-(pageStateLimit));
+            }
+        
+>>>>>>> 7e9950f390562d18ef43ab0d7d46f651a9180b9d
         }
 
         // Functions declarations
@@ -913,7 +925,7 @@
             }
 
             console.log('Last object on history to restore url');   
-            window.history.replaceState(null, null, '/file-manager/generate'); 
+            window.history.replaceState({ page: index }, null, '/file-manager/generate'); 
         }
 
         // Original buttons for filters
@@ -938,7 +950,13 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
+<<<<<<< HEAD
             console.log(window.history.state);
+=======
+console.log(e);
+console.log(e.currentTarget.performance.navigation.type);
+            console.log('Executing onpopstate');
+>>>>>>> 7e9950f390562d18ef43ab0d7d46f651a9180b9d
 
             // 0 indicates initial state
             if (lastSavedState === 0) {
@@ -1025,29 +1043,51 @@
         window.onbeforeunload = (e) => {
 
             console.log('Executing onbeforeunload');
-
-            setSecurityCookie();
-    
-            if (!historyFiltered) {
-
-            let previousState = previousStates.pop();
-
-                if (previousState !== undefined) {
-                    if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
-                        byCitySelected = previousState.city ? true : false;
-                        bySalarySelected = previousState.salary ? true : false;
-                        byQualificationSelected = previousState.qualification ? true : false;
-
-                        handleStatusIndicatorsStatus();    
-                        triggerFilterRequest();
-                    } else {
-                        localStorage.setItem('pageStatus', JSON.stringify({
-                            previousStates: previousStates
-                        }));
-                    }
-                }
-
+            console.log(e);
+            console.log(e.currentTarget.performance.navigation);
+            console.log(e.currentTarget.performance.eventCounts.values());
+            const d = e.currentTarget.performance.eventCounts.values();
+            for (let e of d) {
+                console.log('eee' + ': ' + e)
             }
+            console.log(e.currentTarget.performance.getEntries());
+            return false;
+            const navigationType = e.currentTarget.performance.navigation.type; 
+
+            
+            console.log(navigationType);
+
+
+            if (navigationType !== 1) {
+                
+                console.log('Keeping history');
+
+                setSecurityCookie();
+        
+                if (!historyFiltered) {
+
+                let previousState = previousStates.pop();
+
+                    if (previousState !== undefined) {
+                        if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
+                            byCitySelected = previousState.city ? true : false;
+                            bySalarySelected = previousState.salary ? true : false;
+                            byQualificationSelected = previousState.qualification ? true : false;
+
+                            handleStatusIndicatorsStatus();    
+                            triggerFilterRequest();
+                        } else {
+                            localStorage.setItem('pageStatus', JSON.stringify({
+                                previousStates: previousStates
+                            }));
+                        }
+                    }
+
+                }
+            } else {
+                console.log('Reloading page. Clearing history');
+            }
+
         };
 
     </script>
