@@ -203,7 +203,7 @@
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    saveData: true
+                    adjustHistoryLength: true     
                 }));
 
                 window.location = 'http://localhost:3000/file-manager/generate';
@@ -339,7 +339,7 @@
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    saveData: true
+                    adjustHistoryLength: true
                 }));
 
                 window.location = 'http://localhost:3000/file-manager/generate';
@@ -347,25 +347,6 @@
             }
         };
 
-<<<<<<< HEAD
-        console.log('Remote removed. Reverting to origin/master');
-
-        {{!-- let backButton = document.querySelector('div.dv-lvl-1.button-back');
-        let previousState = localStorage.getItem('filters');
-        let backToResultsForm = document.createElement('form');
-        backToResultsForm.action = '/file-manager/generate';
-        backToResultsForm.method = 'GET';
-        let filters = document.createElement('input');
-        filters.name = 'filters';
-        filters.value = previousState;
-        backToResultsForm.appendChild(filters);
-        mapsContainer.appendChild(backToResultsForm);
-        backToResultsForm.submit(); --}}
-        
-
-
-=======
->>>>>>> d3c4aecf97474ba42b4980b7db4aa5cc597a1fa2
     </script>
 
 

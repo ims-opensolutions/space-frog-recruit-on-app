@@ -427,37 +427,42 @@
 
     <script>
 
-<<<<<<< HEAD
-        if (window.history.state && window.history.state.page) {
-            const pageStateLimit = window.history.state.page;
 
-            let index = 1;
-            while (index <= pageStateLimit) {
-
-                console.log(window.history.state);
-                console.log('Replacing states on...' + index);
-                //window.history.replaceState({ page: null }, 'results-interaction-' + index, '/file-manager/generate');
-                index++;
-            }
-=======
-        window.history.reload
         let state = localStorage.getItem('pageStatus');
-        console.log(state);
-        if (!state) {
-            const pageStateLimit = window.history.state ? window.history.state.page : null;
+        const navigation = window.performance.navigation.type;
+        //let clearBrowserHistoryCache = true;
+        console.log('Navigation access method');
+        console.log(window.performance.navigation.type);
+     //   console.log('Page status');
+     //   console.log(state);
+        if (!state || navigation === 1) {
+            let pageStateLimit = window.history.state ? window.history.state.page: null;
+            console.log('State on nav 1');
+            console.log(state);
 
             if (pageStateLimit) {
+
+                if (state && JSON.parse(state).hasOwnProperty('previousStates')) {
+                    state = JSON.parse(state);
+                    if (state.hasOwnProperty('adjustHistoryLength')) {
+                        console.log('Setting less length for history length');
+                        pageStateLimit -= 2;
+                    }
+                } 
+
+                console.log(pageStateLimit);
                 console.log('Clearing browser history');
                 window.history.go(-(pageStateLimit));
+               
+
             }
-        
->>>>>>> 7e9950f390562d18ef43ab0d7d46f651a9180b9d
+
         }
 
         // Functions declarations
 
         // Get filter current status
-        const getEnabledFilters = () => {
+        const getEnabledFilters = () => {   
             return {
                 city: byCitySelected,
                 salary: bySalarySelected,
@@ -709,12 +714,13 @@
                     let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
                     let userId = parseInt(clickedButtonClassName.split('r-')[1]);
 
+/*
                     previousStates.push({
                         city: byCitySelected,
                         salary: bySalarySelected,
                         qualification: byQualificationSelected
 
-                    });
+                    });*/
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates
@@ -950,13 +956,8 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
-<<<<<<< HEAD
-            console.log(window.history.state);
-=======
-console.log(e);
-console.log(e.currentTarget.performance.navigation.type);
+
             console.log('Executing onpopstate');
->>>>>>> 7e9950f390562d18ef43ab0d7d46f651a9180b9d
 
             // 0 indicates initial state
             if (lastSavedState === 0) {
@@ -1041,7 +1042,7 @@ console.log(e.currentTarget.performance.navigation.type);
         
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
-
+/*
             console.log('Executing onbeforeunload');
             console.log(e);
             console.log(e.currentTarget.performance.navigation);
@@ -1051,12 +1052,10 @@ console.log(e.currentTarget.performance.navigation.type);
                 console.log('eee' + ': ' + e)
             }
             console.log(e.currentTarget.performance.getEntries());
-            return false;
+            return false;*/
             const navigationType = e.currentTarget.performance.navigation.type; 
-
             
             console.log(navigationType);
-
 
             if (navigationType !== 1) {
                 
@@ -1065,8 +1064,7 @@ console.log(e.currentTarget.performance.navigation.type);
                 setSecurityCookie();
         
                 if (!historyFiltered) {
-
-                let previousState = previousStates.pop();
+                let previousState = previousStates[previousStates.length - 1];
 
                     if (previousState !== undefined) {
                         if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
@@ -1078,7 +1076,8 @@ console.log(e.currentTarget.performance.navigation.type);
                             triggerFilterRequest();
                         } else {
                             localStorage.setItem('pageStatus', JSON.stringify({
-                                previousStates: previousStates
+                                previousStates: previousStates,
+                                adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false
                             }));
                         }
                     }
