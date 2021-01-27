@@ -427,23 +427,40 @@
 
     <script>
 
-        window.history.reload
         let state = localStorage.getItem('pageStatus');
-        console.log(state);
-        if (!state) {
-            const pageStateLimit = window.history.state ? window.history.state.page : null;
+        const navigation = window.performance.navigation.type;
+        console.log('Navigation access method');
+        console.log(window.performance.navigation.type);
+     //   console.log('Page status');
+     //   console.log(state);
+        if (!state || navigation === 1) {
+            let pageStateLimit = window.history.state ? window.history.state.page: null;
+            console.log('State on nav 1');
+            console.log(state);
 
             if (pageStateLimit) {
+
+                if (state && JSON.parse(state).hasOwnProperty('previousStates')) {
+                    state = JSON.parse(state);
+                    if (state.hasOwnProperty('adjustHistoryLength')) {
+                        console.log('Setting less length for history length');
+                        pageStateLimit -= 2;
+                    }
+                } 
+
+                console.log(pageStateLimit);
                 console.log('Clearing browser history');
                 window.history.go(-(pageStateLimit));
+               
+
             }
-        
+
         }
 
         // Functions declarations
 
         // Get filter current status
-        const getEnabledFilters = () => {
+        const getEnabledFilters = () => {   
             return {
                 city: byCitySelected,
                 salary: bySalarySelected,
@@ -695,15 +712,17 @@
                     let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
                     let userId = parseInt(clickedButtonClassName.split('r-')[1]);
 
+/*
                     previousStates.push({
                         city: byCitySelected,
                         salary: bySalarySelected,
                         qualification: byQualificationSelected
 
-                    });
+                    });*/
 
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates
+                        previousStates: previousStates,
+                        lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length
                     }));
 
                     window.location = '/file-manager/map/' + userId;
@@ -827,7 +846,7 @@
                     byCitySelected = lastFilteredState.city;
                     bySalarySelected = lastFilteredState.salary;
                     byQualificationSelected = lastFilteredState.qualification;
-                    previousStates = previousStates.slice(0, previousStates.length - 1);
+                    //previousStates = previousStates.slice(0, previousStates.length - 1);
                     handleStatusIndicatorsStatus();
                 }
 
@@ -936,13 +955,12 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
-console.log(e);
-console.log(e.currentTarget.performance.navigation.type);
+
             console.log('Executing onpopstate');
 
             // 0 indicates initial state
             if (lastSavedState === 0) {
-                lastSavedState = previousStates.length - 1; // Page status is one less than array length
+                lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState - 1 : previousStates.length - 1; // Page status is one less than array length
             } else if (lastSavedState === -1 && window.history.state && window.history.state.page === 1) {
                 lastSavedState = 0;
             }
@@ -972,7 +990,7 @@ console.log(e.currentTarget.performance.navigation.type);
                         // If current state is minor than previous one, navigation is back
                         } else {
                             console.log('Back navigation');
-
+                            console.log('Last saved state: ' + lastSavedState);
                             requestedStateIndex = lastSavedState - 1;
                             console.log('Requesting state on index: ' + requestedStateIndex);
                         }
@@ -1023,7 +1041,7 @@ console.log(e.currentTarget.performance.navigation.type);
         
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
-
+/*
             console.log('Executing onbeforeunload');
             console.log(e);
             console.log(e.currentTarget.performance.navigation);
@@ -1033,12 +1051,10 @@ console.log(e.currentTarget.performance.navigation.type);
                 console.log('eee' + ': ' + e)
             }
             console.log(e.currentTarget.performance.getEntries());
-            return false;
+            return false;*/
             const navigationType = e.currentTarget.performance.navigation.type; 
-
             
             console.log(navigationType);
-
 
             if (navigationType !== 1) {
                 
@@ -1047,8 +1063,7 @@ console.log(e.currentTarget.performance.navigation.type);
                 setSecurityCookie();
         
                 if (!historyFiltered) {
-
-                let previousState = previousStates.pop();
+                let previousState = previousStates[previousStates.length - 1];
 
                     if (previousState !== undefined) {
                         if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
@@ -1060,7 +1075,9 @@ console.log(e.currentTarget.performance.navigation.type);
                             triggerFilterRequest();
                         } else {
                             localStorage.setItem('pageStatus', JSON.stringify({
-                                previousStates: previousStates
+                                previousStates: previousStates,
+                                adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false,
+                                lastSavedState: history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : (lastSavedState > 0) ? lastSavedState : previousStates.length
                             }));
                         }
                     }
