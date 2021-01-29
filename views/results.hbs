@@ -427,15 +427,9 @@
 
     <script>
 
-<<<<<<< HEAD
 
         let state = localStorage.getItem('pageStatus');
         const navigation = window.performance.navigation.type;
-        //let clearBrowserHistoryCache = true;
-=======
-        let state = localStorage.getItem('pageStatus');
-        const navigation = window.performance.navigation.type;
->>>>>>> ecb2ed725055d567bb6d933c1fa7cddda0515b08
         console.log('Navigation access method');
         console.log(window.performance.navigation.type);
      //   console.log('Page status');
@@ -719,13 +713,7 @@
                     let clickedButtonClassName = e.path.find(element => element.className.startsWith('dv-lvl-2 show-in-map')).className;
                     let userId = parseInt(clickedButtonClassName.split('r-')[1]);
 
-/*
-                    previousStates.push({
-                        city: byCitySelected,
-                        salary: bySalarySelected,
-                        qualification: byQualificationSelected
-
-                    });*/
+                    // Handle here also state if it needs to be replaced/added (lastSavedState < previousStates.length - 1 or not)
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
@@ -994,12 +982,14 @@
 
                             requestedStateIndex = lastSavedState + 1;
                             console.log('Requesting state on index: ' + requestedStateIndex);
+                            lastSavedState++;
                         // If current state is minor than previous one, navigation is back
                         } else {
                             console.log('Back navigation');
                             console.log('Last saved state: ' + lastSavedState);
                             requestedStateIndex = lastSavedState - 1;
                             console.log('Requesting state on index: ' + requestedStateIndex);
+                            lastSavedState--;
                         }
 
                         previousState = previousStates[requestedStateIndex];
@@ -1007,7 +997,6 @@
                         console.log('Values for state:');
                         console.log(previousState);
 
-                        lastSavedState = window.history.state.page;
                     break;
                 }
 
@@ -1048,6 +1037,13 @@
         
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
+
+
+            /*
+            console.log(lastSavedState);
+            console.log(window.history.state);
+            console.log('Returning false');
+            return false;*/
 /*
             console.log('Executing onbeforeunload');
             console.log(e);
@@ -1060,17 +1056,17 @@
             console.log(e.currentTarget.performance.getEntries());
             return false;*/
             const navigationType = e.currentTarget.performance.navigation.type; 
-            
-            console.log(navigationType);
 
             if (navigationType !== 1) {
+
+                const executeOnBeforeUnload = window.history.state && window.history.state.page && window.history.state.page === previousStates.length + 1 ? true : false;
                 
                 console.log('Keeping history');
 
                 setSecurityCookie();
         
-                if (!historyFiltered) {
-                let previousState = previousStates[previousStates.length - 1];
+                if (!historyFiltered || executeOnBeforeUnload) {
+                    let previousState = previousStates[previousStates.length - 1];
 
                     if (previousState !== undefined) {
                         if (previousState && previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
@@ -1083,17 +1079,16 @@
                         } else {
                             localStorage.setItem('pageStatus', JSON.stringify({
                                 previousStates: previousStates,
-<<<<<<< HEAD
-                                adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false
-=======
+
                                 adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false,
                                 lastSavedState: history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : (lastSavedState > 0) ? lastSavedState : previousStates.length
->>>>>>> ecb2ed725055d567bb6d933c1fa7cddda0515b08
+
                             }));
                         }
                     }
 
                 }
+
             } else {
                 console.log('Reloading page. Clearing history');
             }
