@@ -203,7 +203,9 @@
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    adjustHistoryLength: true     
+
+                    adjustHistoryLength: true,
+                    lastSavedState: history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length
                 }));
 
                 window.location = 'http://localhost:3000/file-manager/generate';
@@ -332,16 +334,19 @@
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = () => {
             console.log('Executing onbeforeunload');
+
+            const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState: previousStates.length
             
             if (!historyFiltered) {
-
+                console.log('Sending shit');
                 previousStates = previousStates.length > 0 ? previousStates : [];
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    adjustHistoryLength: true
-                }));
 
+                    adjustHistoryLength: true,
+                    lastSavedState: lastSavedState
+                }));
                 window.location = 'http://localhost:3000/file-manager/generate';
 
             }

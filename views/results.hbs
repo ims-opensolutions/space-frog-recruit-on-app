@@ -427,10 +427,15 @@
 
     <script>
 
+<<<<<<< HEAD
 
         let state = localStorage.getItem('pageStatus');
         const navigation = window.performance.navigation.type;
         //let clearBrowserHistoryCache = true;
+=======
+        let state = localStorage.getItem('pageStatus');
+        const navigation = window.performance.navigation.type;
+>>>>>>> ecb2ed725055d567bb6d933c1fa7cddda0515b08
         console.log('Navigation access method');
         console.log(window.performance.navigation.type);
      //   console.log('Page status');
@@ -723,7 +728,8 @@
                     });*/
 
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates
+                        previousStates: previousStates,
+                        lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length
                     }));
 
                     window.location = '/file-manager/map/' + userId;
@@ -847,7 +853,7 @@
                     byCitySelected = lastFilteredState.city;
                     bySalarySelected = lastFilteredState.salary;
                     byQualificationSelected = lastFilteredState.qualification;
-                    previousStates = previousStates.slice(0, previousStates.length - 1);
+                    //previousStates = previousStates.slice(0, previousStates.length - 1);
                     handleStatusIndicatorsStatus();
                 }
 
@@ -961,7 +967,7 @@
 
             // 0 indicates initial state
             if (lastSavedState === 0) {
-                lastSavedState = previousStates.length - 1; // Page status is one less than array length
+                lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState - 1 : previousStates.length - 1; // Page status is one less than array length
             } else if (lastSavedState === -1 && window.history.state && window.history.state.page === 1) {
                 lastSavedState = 0;
             }
@@ -991,7 +997,7 @@
                         // If current state is minor than previous one, navigation is back
                         } else {
                             console.log('Back navigation');
-
+                            console.log('Last saved state: ' + lastSavedState);
                             requestedStateIndex = lastSavedState - 1;
                             console.log('Requesting state on index: ' + requestedStateIndex);
                         }
@@ -1077,7 +1083,12 @@
                         } else {
                             localStorage.setItem('pageStatus', JSON.stringify({
                                 previousStates: previousStates,
+<<<<<<< HEAD
                                 adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false
+=======
+                                adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false,
+                                lastSavedState: history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : (lastSavedState > 0) ? lastSavedState : previousStates.length
+>>>>>>> ecb2ed725055d567bb6d933c1fa7cddda0515b08
                             }));
                         }
                     }
