@@ -147,6 +147,16 @@
     <script>
 
         // Functions declarations
+        const enableOnpopstateHack = () => {
+            let id = 10001;
+            window.history.pushState({ page: id }, 'results-interaction-' + id, window.location.pathname);
+            id++;
+            window.history.pushState({ page: id }, 'results-interaction-' + id, window.location.pathname);
+            id++;
+            window.history.pushState({ page: id }, 'results-interaction-' + id, window.location.pathname);
+            window.history.go(-1);
+            enableOnpopstate = true;
+        }
 
         // Adds the script for google map api to work 
         const addGoogleMapsApiScript = () => {
@@ -194,6 +204,7 @@
             backButton.onclick = () => {
 
                 previousStates = previousStates.length > 0 ? previousStates : [];
+                const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length;
 
                 if (previousStates.length > 0) {
                     previousStates.push({
@@ -204,8 +215,10 @@
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
                     adjustHistoryLength: true,
-                    lastSavedState: history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length
+                    lastSavedState: lastSavedState
                 }));
+
+                historyFiltered = true;
 
                 window.location = 'http://localhost:3000/file-manager/generate';
 
@@ -214,12 +227,15 @@
 
         // Executes init process
         const init = () => {
+            enableOnpopstateHack();
             addGoogleMapsApiScript();
             setErrorMessageOnLoad();
             setStateOnBackButtonClick();
         }
 
         // Global variables
+        let enableOnpopstate = false;
+        let defaultStateId = 10002;
         let userId = parseInt(window.location.pathname.match(/[0-9]/g).toString().replaceAll(',', ''));
         let historyFiltered = false;
         let mapsContainer = document.querySelectorAll('div.dv-lvl-2.map-container')[0];
@@ -329,12 +345,41 @@
 
         // Executes initiation
         init();
-        
+
+        window.onpopstate = () => {
+            console.log('Executing onpopstate');
+
+            console.log(enableOnpopstate);
+            console.log(window.history.state.page);
+
+
+            if (enableOnpopstate) {
+                const windowState = window.history.state.page;
+
+                if (windowState < defaultStateId) {
+                    console.log('Back navigation');
+                }
+
+                if (windowState > defaultStateId) {
+                    console.log('Forward navigation');
+                }
+
+            } else {
+                console.log('Skipping onpopstate');
+            }
+
+
+
+        } 
+
         // Onbeforeunload to be triggered when unloading every page
-        window.onbeforeunload = () => {
+        window.onbeforeunload = (e) => {
+            console.log(window.history.state);
+
+            return false;
             console.log('Executing onbeforeunload');
 
-            const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState: previousStates.length
+            const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : previousStates.length - 1;
             
             if (!historyFiltered) {
                 console.log('Sending shit');
