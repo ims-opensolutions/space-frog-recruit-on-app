@@ -428,6 +428,24 @@
     <script>
 
 
+        /*
+
+            Usage of lastSavedState in order
+
+            1. Declared
+            2. handleFilterClick
+            3. showInMapButton
+            4. onpopstate
+            5. onbeforeunload
+
+            Flow
+
+
+
+
+        */
+
+
         let state = localStorage.getItem('pageStatus');
         const navigation = window.performance.navigation.type;
         console.log('Navigation access method');
@@ -621,6 +639,9 @@
         // Handles actions on clicks
         const handleFilterClick = (e) => {
 
+            // lastSavedState > 0 means filter has been clicked before and user is navigating through history
+            // lastSavedState === 0 is initial state when page loads for the first time
+            // lastSavedState === -1 means user has navigated to root history level (window.history.state === null), which means it will replace state on page 1
             if (lastSavedState > 0 && lastSavedState < previousStates.length - 1 || lastSavedState === -1 && previousStates.length > 1) {
                 console.log('Replacing state on click');
 
@@ -630,6 +651,7 @@
                     console.log('Last saved state was: ' + lastSavedState + '. Saving next');
                 }
 
+                // Workaround to force normal behavior
                 window.history.go(1);
                 historyOp = 'replace';
             } else {
@@ -658,18 +680,23 @@
                 }
             });
 
+            // Compute current state storage after applying new values for filters
+            // If lastSavedState is 0 (user has not navigated yet) or lastSavedState reaches the last record, new record is pushed
             if (lastSavedState === 0 || (lastSavedState > 0 && lastSavedState === previousStates.length - 1)) {
                 console.log('Saving current filters');
                 previousStates.push(getEnabledFilters());
+                // lastSavedState !== 0 (only gets changed when navigating back in history)
                 if (lastSavedState !== 0) {
                     lastSavedState++;
                 }
             } else {
 
+                // Reset when reaching base level
                 if (lastSavedState === -1) {
                     lastSavedState = 0;
                 }
 
+                // lastSavedState always get higher here, as it is clicking and advancing on states
                 lastSavedState++;
                 console.log('Replacing value of previousStates array on index ' + lastSavedState);
                 previousStates[lastSavedState] = getEnabledFilters();
@@ -717,7 +744,7 @@
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
-                        lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length
+                        lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length - 1
                     }));
 
                     window.location = '/file-manager/map/' + userId;
@@ -887,8 +914,8 @@
         document.cookie = "_p= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
         // Global variables
-        let lastSavedState = 0;
         let requestedStateIndex = 0;
+        let lastSavedState = 0;
         let historyOp = 'regular';
         let previousStates = [];
         let historyFiltered = false;
@@ -905,6 +932,8 @@
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = history.previousStates;
+            lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : 0;
+            console.log(history);
             let index = 1;
 
             console.log('Showing previous states: ');
@@ -953,10 +982,11 @@
 
             console.log('Executing onpopstate');
 
-            // 0 indicates initial state
             if (lastSavedState === 0) {
-                lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState - 1 : previousStates.length - 1; // Page status is one less than array length
+                // lastSavedState received from map page (lastSavedState transfer needs to be checked and unified)
+                lastSavedState = previousStates.length - 1; // Page status is one less than array length
             } else if (lastSavedState === -1 && window.history.state && window.history.state.page === 1) {
+                // Reset here also if history object reached base level (null)
                 lastSavedState = 0;
             }
 
@@ -1025,7 +1055,8 @@
                     triggerFilterRequest();
                 } else {
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates
+                        previousStates: previousStates,
+                        lastSavedState: lastSavedState
                     }));
                 }
             }
@@ -1081,8 +1112,7 @@
                                 previousStates: previousStates,
 
                                 adjustHistoryLength: previousState.hasOwnProperty('adjustHistoryLength') ? true : false,
-                                lastSavedState: history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : (lastSavedState > 0) ? lastSavedState : previousStates.length
-
+                                lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length - 1
                             }));
                         }
                     }
