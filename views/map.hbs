@@ -146,18 +146,6 @@
 
     <script>
 
-        // Functions declarations
-        const enableOnpopstateHack = () => {
-            let id = 10001;
-            window.history.pushState({ page: id }, 'results-interaction-' + id, window.location.pathname);
-            id++;
-            window.history.pushState({ page: id }, 'results-interaction-' + id, window.location.pathname);
-            id++;
-            window.history.pushState({ page: id }, 'results-interaction-' + id, window.location.pathname);
-            window.history.go(-1);
-            enableOnpopstate = true;
-        }
-
         // Adds the script for google map api to work 
         const addGoogleMapsApiScript = () => {
             let polyfillScript = document.createElement('script');
@@ -204,18 +192,21 @@
             backButton.onclick = () => {
 
                 previousStates = previousStates.length > 0 ? previousStates : [];
-                const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length;
+                //const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length;
 
+/*
                 if (previousStates.length > 0) {
                     previousStates.push({
                         userId: userId
                     });
                 }
+                */
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    adjustHistoryLength: true,
-                    lastSavedState: lastSavedState
+
+                    //adjustHistoryLength: true,
+                    //lastSavedState: lastSavedState
                 }));
 
                 historyFiltered = true;
@@ -227,7 +218,6 @@
 
         // Executes init process
         const init = () => {
-            enableOnpopstateHack();
             addGoogleMapsApiScript();
             setErrorMessageOnLoad();
             setStateOnBackButtonClick();
@@ -235,7 +225,6 @@
 
         // Global variables
         let enableOnpopstate = false;
-        let defaultStateId = 10002;
         let userId = parseInt(window.location.pathname.match(/[0-9]/g).toString().replaceAll(',', ''));
         let historyFiltered = false;
         let mapsContainer = document.querySelectorAll('div.dv-lvl-2.map-container')[0];
@@ -254,7 +243,10 @@
             console.log('Previous states');
             console.log(previousStates); // Check amount of records stored
 
+            /*
+
             for (const previousState of previousStates) {
+
 
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) {
                     console.log('Populating history with filters');
@@ -270,6 +262,7 @@
 
             window.history.replaceState(null, null, '/file-manager/map/' + userId);
 
+            */
         }
 
         // Builds the map
@@ -374,12 +367,9 @@
 
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
-            console.log(window.history.state);
-
-            return false;
             console.log('Executing onbeforeunload');
 
-            const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : previousStates.length - 1;
+            //const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : previousStates.length - 1;
             
             if (!historyFiltered) {
                 console.log('Sending shit');
@@ -387,8 +377,9 @@
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    adjustHistoryLength: true,
-                    lastSavedState: lastSavedState
+
+                    //adjustHistoryLength: true,
+                    //lastSavedState: lastSavedState
                 }));
                 window.location = 'http://localhost:3000/file-manager/generate';
 
