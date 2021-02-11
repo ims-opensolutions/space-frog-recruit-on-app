@@ -449,8 +449,9 @@
         let pageReloaded = false;
         console.log(window.history.state);
         if (navigation === 1 && window.history.state && window.history.state.page) {
+            console.log('Reseting');
             pageReloaded = true;
-            window.history.replaceState(null, 'http://localhost:3000/file-manager', window.location.pathname);
+            window.history.go(-(window.history.state.page + 1));
         }
 
         let state = localStorage.getItem('pageStatus');
@@ -675,8 +676,61 @@
             if (indexLimitWhenHistoryLoaded > 0) {
                 clickedWithHistoryLoaded = true; 
             }
-            console.log('Pushing new state on click');
-            window.history.pushState({ page: previousStates.length }, 'results-interaction-' + previousStates.length, '/file-manager/generate');
+
+            const initialStatesKeys = initialStates.states.map((state, index) => index);
+            console.log(initialStatesKeys);
+            console.log(initialStatesKeys.includes(window.history.state && window.history.state.page ? window.history.state.page : 1000));
+            if (window.history.state && window.history.state.page && initialStatesKeys.includes(window.history.state.page)) {
+                console.log('Hey, this state is part of the initial ones. We do not apply the index limit here');
+            }
+
+            indexForHistory = window.history.state && window.history.state.page !== null ? window.history.state.page : -1;
+            console.log('Index: ' + indexForHistory);
+            console.log('Previous states length: ' + previousStates.length);
+            console.log(previousStates.length - indexForHistory);
+
+            if (clickedWithHistoryLoaded && !window.history.state) {
+                indexForHistory = indexLimitWhenHistoryLoaded;
+            }   
+
+            // Problem: when going back, this difference between previousStates.length and index exists and tries to replace
+            // That's why above we set indexForHistory to array.length and this causes another problem: when going back, it pushes instead of replacing
+
+            // We can store an initial states array with the ones set on the first page and apart from this, the total, which would be previous states
+            // If history contains a state that is one of the indexes on the initial array, we don't apply the indexLimit. Otherwise, we do it.
+            // But there is a problem here: if we set when showing a map, then is set everytime the show map button is clicked, thus updating. We don't want that
+
+            // An idea to fix this:
+            // Set a global variable which sets { states: previousStates, update: true } or the same object coming from localStorage, with update set to false,
+            // so it is not updated again. This property can be named initialStates. This way, first page saves the initial states, otherwise it doesn't.
+
+            // So pageStatus object would be like:
+            /*
+                pageStates = {
+                    previousStates: previousStates,
+                    initialStates: {
+                        states: previousStates,
+                        update: false
+                    }
+                }
+
+            */
+
+            if ((previousStates.length - indexForHistory) > 1) {
+                // Replacing
+                console.log('Replacing existing state')
+                indexForHistory++;
+                window.history.forward();
+                
+                // Rest of the code need to be done on onpopstate event: page state is not updated yet, so value is not correct
+                historyOp = 'replace';
+            } else {
+                // Pushing
+                console.log('Pushing new state on click');
+                indexForHistory = previousStates.length;
+                window.history.pushState({ page: indexForHistory }, 'results-interaction-' + indexForHistory, '/file-manager/generate');
+                historyOp = 'regular';
+            }
             
             firstLoading = false;
 
@@ -725,7 +779,14 @@
             }
             */
 
-            previousStates.push(getEnabledFilters());
+            switch (historyOp) {
+                case 'regular': 
+                    previousStates.push(getEnabledFilters());
+                    break;
+                case 'replace': 
+                    previousStates[indexForHistory] = getEnabledFilters();
+                    break;
+            }
             
             handleStatusIndicatorsStatus();
             triggerFilterRequest();
@@ -765,8 +826,14 @@
 
                     // Handle here also state if it needs to be replaced/added (lastSavedState < previousStates.length - 1 or not)
 
+                    if (initialStates.update) {
+                        initialStates.states = previousStates;
+                        initialStates.update = false;
+                    }
+
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
+                        initialStates: initialStates
                         //lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length - 1
                     }));
 
@@ -900,11 +967,12 @@
                 }
                 */
 
-                let lastFilteredState = previousStates[previousStates.length - 1];
-                    byCitySelected = lastFilteredState.city;
-                    bySalarySelected = lastFilteredState.salary;
-                    byQualificationSelected = lastFilteredState.qualification;
-                    handleStatusIndicatorsStatus();
+                //let lastFilteredState = previousStates[previousStates.length - 1];
+                let lastFilteredState = window.history.state && window.history.state.page ? previousStates[window.history.state.page] : previousStates[previousStates.length - 1];
+                byCitySelected = lastFilteredState.city;
+                bySalarySelected = lastFilteredState.salary;
+                byQualificationSelected = lastFilteredState.qualification;
+                handleStatusIndicatorsStatus();
 
             } else {
                 handleStatusIndicatorsStatus();
@@ -951,12 +1019,14 @@
         // Global variables
         let requestedStateIndex = 0;
         //let lastSavedState = 0;
-        let historyOp = 'regular';
+        let historyOp = '';
         let previousStates = [];
+        let initialStates = { states: [], update: true };
         let historyFiltered = false;
         let firstLoading = true;
         let indexLimitWhenHistoryLoaded = 0;
         let clickedWithHistoryLoaded = false;
+        let indexForHistory;
 
         let byCitySelected = false;
         let bySalarySelected = false;
@@ -969,6 +1039,7 @@
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = !pageReloaded ? history.previousStates : [];
+            initialStates = !pageReloaded ? history.initialStates : initialStates;
             indexLimitWhenHistoryLoaded = previousStates.length;
             //lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : 0;
             console.log(history);
@@ -1023,28 +1094,60 @@
             console.log('Executing onpopstate');
 
             let previousState;
-            if (window.history.state && window.history.state.page !== undefined && window.history.state.page !== null) {
-                console.log('From array');
-                let index = window.history.state.page;
 
-                previousState = previousStates[index];
-            } else {
-                if (clickedWithHistoryLoaded && window.history.state && window.history.state.page) {
-                    index = window.history.state.page >= indexLimitWhenHistoryLoaded ? window.history.state.page : 0;
-                    previousState = previousStates[index];
-                } else if (clickedWithHistoryLoaded && !window.history.state) {
-                    index = indexLimitWhenHistoryLoaded - 1;
-                    previousState = previousStates[index];
-                } else {
-                    console.log('From crafted object');
-                    previousState = {
-                        city: false,
-                        salary: false,
-                        qualification: false
+            historyOp = historyOp === '' ? 'regular' : historyOp;
+
+            switch (historyOp) {
+                case 'replace':
+                    window.history.replaceState({ page: indexForHistory }, 'results-interaction-' + indexForHistory, '/file-manager/generate');
+                    historyOp = 'regular';
+                    break;
+                case 'regular':
+                    if (window.history.state && window.history.state.page !== undefined && window.history.state.page !== null) {
+                        console.log('From array');
+                        let index = window.history.state.page;
+
+                        previousState = previousStates[index];
+                    } else {
+                        if (clickedWithHistoryLoaded && window.history.state && window.history.state.page) {
+                            index = window.history.state.page >= indexLimitWhenHistoryLoaded ? window.history.state.page : 0;
+                            previousState = previousStates[index];
+                        } else if (clickedWithHistoryLoaded && !window.history.state) {
+                            index = indexLimitWhenHistoryLoaded - 1;
+                            previousState = previousStates[index];
+                        } else {
+                            console.log('From crafted object');
+                            previousState = {
+                                city: false,
+                                salary: false,
+                                qualification: false
+                            }
+                        }
+                        
                     }
-                }
-                
+                    break;
             }
+            
+            console.log(previousState);
+            if (previousState !== undefined) {
+                if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
+                    byCitySelected = previousState.city ? true : false;
+                    bySalarySelected = previousState.salary ? true : false;
+                    byQualificationSelected = previousState.qualification ? true : false;
+
+                    handleStatusIndicatorsStatus();    
+                    triggerFilterRequest();
+                } else {
+                    localStorage.setItem('pageStatus', JSON.stringify({
+                        previousStates: previousStates,
+                        //lastSavedState: lastSavedState
+                    }));
+                }
+            }
+
+            // Boolean to reproduce behavior onbeforeunload if onpopstate is not triggered
+            historyFiltered = true;
+
 
             /*
 
@@ -1112,25 +1215,7 @@
             }
 
             */
-            console.log(previousState);
-            if (previousState !== undefined) {
-                if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
-                    byCitySelected = previousState.city ? true : false;
-                    bySalarySelected = previousState.salary ? true : false;
-                    byQualificationSelected = previousState.qualification ? true : false;
 
-                    handleStatusIndicatorsStatus();    
-                    triggerFilterRequest();
-                } else {
-                    localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates,
-                        //lastSavedState: lastSavedState
-                    }));
-                }
-            }
-
-            // Boolean to reproduce behavior onbeforeunload if onpopstate is not triggered
-            historyFiltered = true;
 
         }
         
@@ -1171,6 +1256,7 @@
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
+                        initialStates: initialStates
                     }));
 
                     /*
