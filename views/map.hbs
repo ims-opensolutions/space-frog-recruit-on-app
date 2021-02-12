@@ -204,7 +204,8 @@
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    initialStates: initialStates
+                    lastSavedPage: { page: page + 1, totalStates: 0 }
+                    //initialStates: initialStates
                     //adjustHistoryLength: true,
                     //lastSavedState: lastSavedState
                 }));
@@ -234,12 +235,16 @@
         let previousStates;
         let intialStates;
         let index;
+        let page; 
+        let totalStatesOnPreviousPage;
 
         // History management
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = history.previousStates;
-            initialStates = history.initialStates;
+            page = history.lastSavedPage.page;
+            totalStatesOnPreviousPage = history.lastSavedPage.totalStates;
+            //initialStates = history.initialStates;
             index = 1;
 
             console.log('Previous states');
@@ -379,7 +384,8 @@
 
                 localStorage.setItem('pageStatus', JSON.stringify({
                     previousStates: previousStates,
-                    initialStates: initialStates
+                    lastSavedPage: { page: page, totalStates: totalStatesOnPreviousPage }
+                    //initialStates: initialStates
                     //adjustHistoryLength: true,
                     //lastSavedState: lastSavedState
                 }));
