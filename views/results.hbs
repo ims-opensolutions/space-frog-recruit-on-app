@@ -440,21 +440,35 @@
 
             Flow
 
+            Payload to pass through pages
+
+            previousStates -> total states
+            lastSavedPage -> { page: 0, totalStates: previousStates.length }
 
 
 
         */
 
+
         const navigation = window.performance.navigation.type;
         let pageReloaded = false;
+        let historyOp = '';
         console.log(window.history.state);
-        if (navigation === 1 && window.history.state && window.history.state.page) {
+
+        console.log(navigation);
+        console.log(window.history.state)
+        
+        if (navigation === 1 && window.history.state && window.history.state.state !== undefined && window.history.state.state !== null) {
+
             console.log('Reseting');
             pageReloaded = true;
-            window.history.go(-(window.history.state.page + 1));
+            let firstPageIndex = !isNaN(window.history.state.state) ? window.history.state.state : 0;
+            window.history.go(-(firstPageIndex + 1));
+            historyOp = 'none';
         }
+        
 
-        let state = localStorage.getItem('pageStatus');
+        //let state = localStorage.getItem('pageStatus');
         //const navigation = window.performance.navigation.type;
         console.log('Navigation access method');
         console.log(window.performance.navigation.type);
@@ -671,7 +685,7 @@
                 window.history.pushState({ page: previousStates.length }, 'results-interaction-' + previousStates.length, '/file-manager/generate');
                 historyOp = 'regular';
             }
-            */
+            
 
             if (indexLimitWhenHistoryLoaded > 0) {
                 clickedWithHistoryLoaded = true; 
@@ -692,6 +706,8 @@
             if (clickedWithHistoryLoaded && !window.history.state) {
                 indexForHistory = indexLimitWhenHistoryLoaded;
             }   
+
+            */
 
             // Problem: when going back, this difference between previousStates.length and index exists and tries to replace
             // That's why above we set indexForHistory to array.length and this causes another problem: when going back, it pushes instead of replacing
@@ -716,10 +732,12 @@
 
             */
 
-            if ((previousStates.length - indexForHistory) > 1) {
+            state = window.history.state && window.history.state.state !== undefined && window.history.state.state !== null && window.history.state.state !== 'initial' ? window.history.state.state + 1 : 0;
+            console.log('State: ' + state);
+            if ((previousStates.length - state) > 1) {
                 // Replacing
                 console.log('Replacing existing state')
-                indexForHistory++;
+                state++;
                 window.history.forward();
                 
                 // Rest of the code need to be done on onpopstate event: page state is not updated yet, so value is not correct
@@ -727,8 +745,7 @@
             } else {
                 // Pushing
                 console.log('Pushing new state on click');
-                indexForHistory = previousStates.length;
-                window.history.pushState({ page: indexForHistory }, 'results-interaction-' + indexForHistory, '/file-manager/generate');
+                window.history.pushState({ page: page, state: state }, window.location.href, window.location.href);
                 historyOp = 'regular';
             }
             
@@ -826,14 +843,17 @@
 
                     // Handle here also state if it needs to be replaced/added (lastSavedState < previousStates.length - 1 or not)
 
+/*
                     if (initialStates.update) {
                         initialStates.states = previousStates;
                         initialStates.update = false;
                     }
-
+                    */
+                    console.log(page);
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
-                        initialStates: initialStates
+                        lastSavedPage: { page: page, totalStates: previousStates.length }
+                        //initialStates: initialStates
                         //lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length - 1
                     }));
 
@@ -1017,16 +1037,17 @@
         document.cookie = "_p= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
         // Global variables
-        let requestedStateIndex = 0;
+        //let requestedStateIndex = 0;
         //let lastSavedState = 0;
-        let historyOp = '';
         let previousStates = [];
-        let initialStates = { states: [], update: true };
+        //let initialStates = { states: [], update: true };
         let historyFiltered = false;
         let firstLoading = true;
-        let indexLimitWhenHistoryLoaded = 0;
-        let clickedWithHistoryLoaded = false;
+        //let indexLimitWhenHistoryLoaded = 0;
+        //let clickedWithHistoryLoaded = false;
         let indexForHistory;
+        let page = 0;
+        let state = 'initial';
 
         let byCitySelected = false;
         let bySalarySelected = false;
@@ -1039,26 +1060,28 @@
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
             previousStates = !pageReloaded ? history.previousStates : [];
-            initialStates = !pageReloaded ? history.initialStates : initialStates;
-            indexLimitWhenHistoryLoaded = previousStates.length;
+            page = !pageReloaded ? (history.lastSavedPage && history.lastSavedPage.page ? history.lastSavedPage.page : 0) : 0;
+            console.log('Page value is: ' + page);
+            state = !pageReloaded ? (window.history.state && window.history.state.state ? window.history.state.state : 'initial') : 'initial';
+            let index = 1;
+            //initialStates = !pageReloaded ? history.initialStates : initialStates;
+            //indexLimitWhenHistoryLoaded = previousStates.length;
             //lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : 0;
             console.log(history);
-            let index = 1;
 
             console.log('Showing previous states: ');
             console.log(previousStates);
-
 
             /*
             for (const previousState of previousStates) {
 
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) {
                     console.log('Populating history with filters');
-                    window.history.replaceState({ page: index }, 'results-interaction-' + index, '/file-manager/generate');
+                    window.history.replaceState({ page: page, state: index }, 'results-interaction-' + index, '/file-manager/generate');
                     index++;
                 } else {
                     console.log('Populating history with user id for map');
-                    window.history.replaceState({ page: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
+                    window.history.replaceState({ page: page, state: index }, 'maps-interaction-' + index, '/file-manager/map/' + previousState.userId);
                     index++;
                 }
         
@@ -1067,6 +1090,11 @@
             console.log('Last object on history to restore url');   
             window.history.replaceState({ page: index }, null, '/file-manager/generate'); 
             */
+
+            window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
+            
+        } else {
+            window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
         }
 
         // Original buttons for filters
@@ -1092,23 +1120,32 @@
         window.onpopstate = (e) => {
 
             console.log('Executing onpopstate');
-
+            console.log(historyOp);
             let previousState;
 
             historyOp = historyOp === '' ? 'regular' : historyOp;
 
+            page = window.history.state && window.history.state.page ? window.history.state.page : 0
+            state = window.history.state && window.history.state.state !== null && window.history.state !== undefined ? window.history.state.state : 'initial';
+
+            console.log('Values for page: ' + page);
+            console.log('Values for state: ' + state);
+
+
             switch (historyOp) {
                 case 'replace':
-                    window.history.replaceState({ page: indexForHistory }, 'results-interaction-' + indexForHistory, '/file-manager/generate');
+                    window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
                     historyOp = 'regular';
                     break;
                 case 'regular':
-                    if (window.history.state && window.history.state.page !== undefined && window.history.state.page !== null) {
+                    if (window.history.state && window.history.state.state !== undefined && window.history.state.state !== null && window.history.state.state !== 'initial') {
                         console.log('From array');
-                        let index = window.history.state.page;
+                        let index = !isNaN(window.history.state.state) ? window.history.state.state : 0;
 
                         previousState = previousStates[index];
                     } else {
+                        console.log('Initial state');
+                        /*
                         if (clickedWithHistoryLoaded && window.history.state && window.history.state.page) {
                             index = window.history.state.page >= indexLimitWhenHistoryLoaded ? window.history.state.page : 0;
                             previousState = previousStates[index];
@@ -1123,8 +1160,15 @@
                                 qualification: false
                             }
                         }
-                        
+                        */
+                        previousState = {
+                            city: false,
+                            salary: false,
+                            qualification: false
+                        }
                     }
+                    break;
+                default: 
                     break;
             }
             
@@ -1147,7 +1191,6 @@
 
             // Boolean to reproduce behavior onbeforeunload if onpopstate is not triggered
             historyFiltered = true;
-
 
             /*
 
@@ -1216,10 +1259,9 @@
 
             */
 
-
         }
         
-        // Onbeforeunload to be triggered when unloading every page
+        // Onbeforeunload    to be triggered when unloading every page
         window.onbeforeunload = (e) => {
 
 
@@ -1244,9 +1286,8 @@
             if (navigationType !== 1) {
 
                 const executeOnBeforeUnload = window.history.state && 
-                                              window.history.state.page && 
-                                              window.history.state.page === previousStates.length - 1 ? true : 
-                                                    clickedWithHistoryLoaded ? true : false;
+                                              window.history.state.state && 
+                                              window.history.state.state === previousStates.length - 1 ? true : false;
                 
                 console.log('Keeping history');
 
@@ -1256,7 +1297,8 @@
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         previousStates: previousStates,
-                        initialStates: initialStates
+                        lastSavedPage: { page: page, totalStates: previousStates.length }
+                        //initialStates: initialStates
                     }));
 
                     /*
