@@ -473,6 +473,31 @@
         if (window.performance.navigation.type === 1) {
             pageReloaded = true;
             historyOp = 'none'; 
+
+            let historyOnReload = localStorage.getItem('pageStatus');
+            localStorage.removeItem('pageStatus');
+
+            historyOnReload = JSON.parse(historyOnReload);
+
+            if (historyOnReload) {
+            let totalStatesOnReload = historyOnReload.totalStates;
+
+            let pagesVisited = 
+                totalStatesOnReload.filter(currentState => currentState.page > 0).length +    
+                totalStatesOnReload.map(currentState => currentState.state.length)
+                           .reduce((acc, curr) => acc + curr);
+
+            console.log(pagesVisited);
+            window.history.go(-(pagesVisited));
+        }
+
+            
+                
+            // To calculate how many pages you have to go back in history
+            // 1 per each push on filters page
+            // 1 per each map shown in which the user has pushed go back
+
+            // Map pages can be calculated base on the keys on totalStates. From 1, each key is 1 page user has seen
         }
         
 
@@ -1099,8 +1124,10 @@
 
         // History management
         if (history !== null && history !== undefined) {
+            //if (pageReloaded) window.history.pushState({ page: 0, state: 'initial' }, window.location.href, window.location.href);
             history = JSON.parse(history);
             totalStates = !pageReloaded ? history.totalStates : [];
+            currentPageStates = !pageReloaded ? currentPageStates : { page: 0, state: [] }
             windowPrecedence = !pageReloaded ? history.windowPrecedence : false;
             page = !pageReloaded ? (window.history.state && window.history.state.page && windowPrecedence ? window.history.state.page : history.lastSavedPage.page) : 0;
             console.log('Page value is: ' + page);
@@ -1419,6 +1446,7 @@
                     let totalStatesLength = 0;
                     totalStates.forEach(currentState => totalStatesLength += currentState.state ? currentState.state.length : 0);
                     console.log('Checking total length for states at page is correct: ' + totalStatesLength);
+                    page = pageReloaded ? 0 : page;
 
                     localStorage.setItem('pageStatus', JSON.stringify({
                         totalStates: totalStates,
