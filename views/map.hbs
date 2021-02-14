@@ -191,7 +191,7 @@
             let backButton = document.querySelector('div.dv-lvl-1.button-back');
             backButton.onclick = () => {
 
-                previousStates = previousStates.length > 0 ? previousStates : [];
+                totalStates = totalStates.length > 0 ? totalStates : [];
                 //const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length;
 
 /*
@@ -203,7 +203,7 @@
                 */
 
                 localStorage.setItem('pageStatus', JSON.stringify({
-                    previousStates: previousStates,
+                    totalStates: totalStates,
                     lastSavedPage: { page: page + 1, totalStates: 0 }
                     //initialStates: initialStates
                     //adjustHistoryLength: true,
@@ -232,7 +232,7 @@
 
         let history = localStorage.getItem('pageStatus');
         //localStorage.removeItem('pageStatus');
-        let previousStates;
+        let totalStates;
         let intialStates;
         let index;
         let page; 
@@ -241,14 +241,14 @@
         // History management
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
-            previousStates = history.previousStates;
+            totalStates = history.totalStates;
             page = history.lastSavedPage.page;
             totalStatesOnPreviousPage = history.lastSavedPage.totalStates;
             //initialStates = history.initialStates;
             index = 1;
 
             console.log('Previous states');
-            console.log(previousStates); // Check amount of records stored
+            console.log(totalStates); // Check amount of records stored
 
             /*
 
@@ -380,11 +380,12 @@
             
             if (!historyFiltered) {
                 console.log('Sending shit');
-                previousStates = previousStates.length > 0 ? previousStates : [];
+                totalStates = totalStates.length > 0 ? totalStates : [];
 
                 localStorage.setItem('pageStatus', JSON.stringify({
-                    previousStates: previousStates,
-                    lastSavedPage: { page: page, totalStates: totalStatesOnPreviousPage }
+                    totalStates: totalStates,
+                    lastSavedPage: { page: page, totalStates: totalStatesOnPreviousPage },
+                    windowPrecedence: true
                     //initialStates: initialStates
                     //adjustHistoryLength: true,
                     //lastSavedState: lastSavedState
