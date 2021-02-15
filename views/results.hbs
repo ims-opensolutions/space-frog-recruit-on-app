@@ -449,7 +449,11 @@
 
         */
 
+<<<<<<< HEAD
 
+=======
+        /*
+>>>>>>> cc138cfd433bde542daab8a8f7800ac252057bda
         const navigation = window.performance.navigation.type;
         let pageReloaded = false;
         let historyOp = '';
@@ -465,6 +469,40 @@
             let firstPageIndex = !isNaN(window.history.state.state) ? window.history.state.state : 0;
             window.history.go(-(firstPageIndex + 1));
             historyOp = 'none';
+
+        }
+        */
+
+        let pageReloaded = false;
+        let historyOp = '';
+        if (window.performance.navigation.type === 1) {
+            pageReloaded = true;
+            historyOp = 'none'; 
+
+            let historyOnReload = localStorage.getItem('pageStatus');
+            localStorage.removeItem('pageStatus');
+
+            historyOnReload = JSON.parse(historyOnReload);
+
+            if (historyOnReload) {
+            let totalStatesOnReload = historyOnReload.totalStates;
+
+            let pagesVisited = 
+                totalStatesOnReload.filter(currentState => currentState.page > 0).length +    
+                totalStatesOnReload.map(currentState => currentState.state.length)
+                           .reduce((acc, curr) => acc + curr);
+
+            console.log(pagesVisited);
+            window.history.go(-(pagesVisited));
+        }
+
+            
+                
+            // To calculate how many pages you have to go back in history
+            // 1 per each push on filters page
+            // 1 per each map shown in which the user has pushed go back
+
+            // Map pages can be calculated base on the keys on totalStates. From 1, each key is 1 page user has seen
         }
         
 
@@ -732,9 +770,18 @@
 
             */
 
+
+            // Remove items from total states if higher than current index (history updated)
+            totalStates = totalStates.filter((currentState, index) => index <= page);
+
+            let stateBeforeClick = window.history.state.state;
             state = window.history.state && window.history.state.state !== undefined && window.history.state.state !== null && window.history.state.state !== 'initial' ? window.history.state.state + 1 : 0;
+            state = currentPageStates.state.length === 0 && totalStates[page] && Array.isArray(totalStates[page].state) && totalStates[page].state.length > 0 
+                ? 1
+                : state;
             console.log('State: ' + state);
-            if ((previousStates.length - state) > 1) {
+            let statesForPage = totalStates.find(currentState => currentState.page === window.history.state.page);
+            if ((statesForPage && statesForPage.state && Array.isArray(statesForPage.state) && statesForPage.state.length - stateBeforeClick) > 1) {
                 // Replacing
                 console.log('Replacing existing state')
                 state++;
@@ -798,10 +845,19 @@
 
             switch (historyOp) {
                 case 'regular': 
-                    previousStates.push(getEnabledFilters());
+                    //previousStates.push(getEnabledFilters());
+                    currentPageStates.page = page;
+
+                    if (currentPageStates.state.length === 0 && totalStates[page] && Array.isArray(totalStates[page].state) && totalStates[page].state.length > 0) {
+                        currentPageStates.state = totalStates[page].state.concat([getEnabledFilters()]);
+                    } else {
+                        currentPageStates.state.push(getEnabledFilters());
+                    }
+                   
+                    totalStates[page] = currentPageStates;
                     break;
                 case 'replace': 
-                    previousStates[indexForHistory] = getEnabledFilters();
+                    statesForPage.state[state - 1] = getEnabledFilters();
                     break;
             }
             
@@ -849,10 +905,14 @@
                         initialStates.update = false;
                     }
                     */
-                    console.log(page);
+
+                    let totalStatesLength = 0;
+                    totalStates.forEach(currentState => totalStatesLength += currentState.state ? currentState.state.length : 0);
+
+                    console.log('Checking total length for states at page is correct: ' + totalStatesLength);
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates,
-                        lastSavedPage: { page: page, totalStates: previousStates.length }
+                        totalStates: totalStates,
+                        lastSavedPage: { page: page, totalStates: totalStatesLength }
                         //initialStates: initialStates
                         //lastSavedState: lastSavedState > 0 ? lastSavedState : previousStates.length - 1
                     }));
@@ -968,7 +1028,7 @@
         const setPreviousStates = () => {
             console.log('Setting previous states');
             
-            if (previousStates && previousStates.length > 0) {
+            if (totalStates && totalStates.length > 0) {
 
                 /*
                 if (previousStates[previousStates.length - 1].hasOwnProperty('userId')) {
@@ -988,7 +1048,18 @@
                 */
 
                 //let lastFilteredState = previousStates[previousStates.length - 1];
-                let lastFilteredState = window.history.state && window.history.state.page ? previousStates[window.history.state.page] : previousStates[previousStates.length - 1];
+                
+                let pagePosition = window.history.state.page;
+                let lastPageStates;
+                
+                while (pagePosition >= 0 && !lastPageStates) {
+                    if (!lastPageStates) {
+                        lastPageStates = totalStates.find(currentState => currentState.page === pagePosition);
+                    }
+                    pagePosition--;
+                }
+
+                let lastFilteredState = state === 'initial' ? lastPageStates.state[0] : lastPageStates.state[lastPageStates.state.length - 1];
                 byCitySelected = lastFilteredState.city;
                 bySalarySelected = lastFilteredState.salary;
                 byQualificationSelected = lastFilteredState.qualification;
@@ -1039,7 +1110,9 @@
         // Global variables
         //let requestedStateIndex = 0;
         //let lastSavedState = 0;
-        let previousStates = [];
+
+        let currentPageStates = { page: 0, state: [] };
+        let totalStates = [];
         //let initialStates = { states: [], update: true };
         let historyFiltered = false;
         let firstLoading = true;
@@ -1048,6 +1121,8 @@
         let indexForHistory;
         let page = 0;
         let state = 'initial';
+
+        let windowPrecedence = false;
 
         let byCitySelected = false;
         let bySalarySelected = false;
@@ -1058,9 +1133,13 @@
 
         // History management
         if (history !== null && history !== undefined) {
+            //if (pageReloaded) window.history.pushState({ page: 0, state: 'initial' }, window.location.href, window.location.href);
             history = JSON.parse(history);
-            previousStates = !pageReloaded ? history.previousStates : [];
-            page = !pageReloaded ? (history.lastSavedPage && history.lastSavedPage.page ? history.lastSavedPage.page : 0) : 0;
+
+            totalStates = !pageReloaded ? history.totalStates : [];
+            currentPageStates = !pageReloaded ? currentPageStates : { page: 0, state: [] }
+            windowPrecedence = !pageReloaded ? history.windowPrecedence : false;
+            page = !pageReloaded ? (window.history.state && window.history.state.page && windowPrecedence ? window.history.state.page : history.lastSavedPage.page) : 0;
             console.log('Page value is: ' + page);
             state = !pageReloaded ? (window.history.state && window.history.state.state ? window.history.state.state : 'initial') : 'initial';
             let index = 1;
@@ -1070,7 +1149,8 @@
             console.log(history);
 
             console.log('Showing previous states: ');
-            console.log(previousStates);
+
+            console.log(totalStates);
 
             /*
             for (const previousState of previousStates) {
@@ -1089,9 +1169,42 @@
 
             console.log('Last object on history to restore url');   
             window.history.replaceState({ page: index }, null, '/file-manager/generate'); 
+
             */
 
-            window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
+            if (windowPrecedence && window.history.state.page !== history.lastSavedPage.page && !isNaN(window.history.state.page)) {
+                // Here we should replace with previous saved state
+                console.log('Replacing history page with previous set value: ' + window.history.state.page);
+                window.history.replaceState({ page: window.history.state.page, state: state }, window.location.href, window.location.href);
+            } else {
+                // Here we should push a new state
+                console.log('Here we should push a new state');
+                console.log('Checking history before pushing new initial object: ' + window.history.state);
+                window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
+            }
+
+            if (page > 0 && state === 'initial') {
+                let pagePosition = window.history.state.page;
+                let lastPageStates;
+                
+                while (pagePosition >= 0 && !lastPageStates) {
+                    if (!lastPageStates) {
+                        lastPageStates = totalStates.find(currentState => currentState.page === pagePosition);
+                    }
+                    pagePosition--;
+                }
+
+                if (totalStates.find(currentState => currentState.page === page) === undefined) {
+                    console.log('Always udefined');
+                    if (lastPageStates) {
+                        let initialStateForNewPage = lastPageStates.state[lastPageStates.state.length - 1];
+                        totalStates.push({ page: page, state: [initialStateForNewPage] });       
+                    } else {
+                        console.log('No filters have been pushed to history');
+                    }
+                }
+                
+            }
             
         } else {
             window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
@@ -1122,7 +1235,6 @@
             console.log('Executing onpopstate');
             console.log(historyOp);
             let previousState;
-
             historyOp = historyOp === '' ? 'regular' : historyOp;
 
             page = window.history.state && window.history.state.page ? window.history.state.page : 0
@@ -1138,13 +1250,34 @@
                     historyOp = 'regular';
                     break;
                 case 'regular':
-                    if (window.history.state && window.history.state.state !== undefined && window.history.state.state !== null && window.history.state.state !== 'initial') {
+
+                    if (window.history.state && window.history.state.state !== undefined && window.history.state.state !== null) {
                         console.log('From array');
+                        let pagePosition = window.history.state.page;
+                        let lastPageStates;
+                        
+                        while (pagePosition >= 0 && !lastPageStates) {
+                            if (!lastPageStates) {
+                                lastPageStates = totalStates.find(currentState => currentState.page === pagePosition);
+                            }
+                            pagePosition--;
+                        }
+
                         let index = !isNaN(window.history.state.state) ? window.history.state.state : 0;
 
-                        previousState = previousStates[index];
-                    } else {
-                        console.log('Initial state');
+                        if (page === 0 && state === 'initial') {
+                            console.log('Setting initial state');
+                            previousState = {
+                                city: false,
+                                salary: false,
+                                qualification: false
+                            }
+                        } else {
+                            previousState = lastPageStates.state[index];
+                        }
+                        
+                    } 
+                        //console.log('Initial state');
                         /*
                         if (clickedWithHistoryLoaded && window.history.state && window.history.state.page) {
                             index = window.history.state.page >= indexLimitWhenHistoryLoaded ? window.history.state.page : 0;
@@ -1161,12 +1294,11 @@
                             }
                         }
                         */
-                        previousState = {
-                            city: false,
-                            salary: false,
-                            qualification: false
-                        }
-                    }
+
+                        
+                    
+                    break;
+                default: 
                     break;
                 default: 
                     break;
@@ -1182,11 +1314,31 @@
                     handleStatusIndicatorsStatus();    
                     triggerFilterRequest();
                 } else {
+                    /*
+                    let totalStatesLength = 0;
+                    totalStates.forEach(currentState => totalStatesLength += currentState.state.length);
+                    console.log('Checking total length for states at page is correct: ' + totalStatesLength);
+
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates,
+                        totalStates: totalStates,
+                        lastSavedPage: { page: page, totalStates: totalStatesLength }
                         //lastSavedState: lastSavedState
                     }));
+                    */
                 }
+                if (window.history.state && window.history.state.state === 'initial') {
+                    let totalStatesLength = 0;
+                totalStates.forEach(currentState => totalStatesLength += currentState.state.length);
+                console.log('Checking total length for states at page is correct: ' + totalStatesLength);
+
+                localStorage.setItem('pageStatus', JSON.stringify({
+                    totalStates: totalStates,
+                    lastSavedPage: { page: page, totalStates: totalStatesLength }
+                    //lastSavedState: lastSavedState
+                }));
+
+                }
+                
             }
 
             // Boolean to reproduce behavior onbeforeunload if onpopstate is not triggered
@@ -1264,7 +1416,6 @@
         // Onbeforeunload    to be triggered when unloading every page
         window.onbeforeunload = (e) => {
 
-
             /*
             console.log(lastSavedState);
             console.log(window.history.state);
@@ -1285,19 +1436,37 @@
 
             if (navigationType !== 1) {
 
+                let pagePosition = window.history.state.page;
+                let lastPageStates;
+                
+                while (pagePosition >= 0 && !lastPageStates) {
+                    if (!lastPageStates) {
+                        lastPageStates = totalStates.find(currentState => currentState.page === pagePosition);
+                    }
+                    pagePosition--;
+                }
+                
                 const executeOnBeforeUnload = window.history.state && 
                                               window.history.state.state && 
-                                              window.history.state.state === previousStates.length - 1 ? true : false;
+
+                                              window.history.state.state === lastPageStates.state.length - 1 ? true : false;
+
                 
                 console.log('Keeping history');
 
                 setSecurityCookie();
+
         
                 if (!historyFiltered || executeOnBeforeUnload) {
 
+                    let totalStatesLength = 0;
+                    totalStates.forEach(currentState => totalStatesLength += currentState.state ? currentState.state.length : 0);
+                    console.log('Checking total length for states at page is correct: ' + totalStatesLength);
+                    page = pageReloaded ? 0 : page;
+
                     localStorage.setItem('pageStatus', JSON.stringify({
-                        previousStates: previousStates,
-                        lastSavedPage: { page: page, totalStates: previousStates.length }
+                        totalStates: totalStates,
+                        lastSavedPage: { page: page, totalStates: totalStatesLength }
                         //initialStates: initialStates
                     }));
 
