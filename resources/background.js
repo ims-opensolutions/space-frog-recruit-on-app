@@ -86,7 +86,7 @@ const onSendHeadersFilter = { urls: [
 const onSendHeadersCallback = function(details) {
     console.log('On sending headers');
 }
-
+  
 chrome.webRequest.onBeforeSendHeaders.addListener(
     onBeforeSendHeadersCallback,
     onBeforeSendHeadersFilter,

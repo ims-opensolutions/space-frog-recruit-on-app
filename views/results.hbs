@@ -449,11 +449,7 @@
 
         */
 
-<<<<<<< HEAD
-
-=======
         /*
->>>>>>> cc138cfd433bde542daab8a8f7800ac252057bda
         const navigation = window.performance.navigation.type;
         let pageReloaded = false;
         let historyOp = '';
@@ -473,43 +469,95 @@
         }
         */
 
+
+/*
+        let pageStatus = localStorage.getItem('pageStatus');
+        pageStatus = pageStatus ? JSON.parse(pageStatus) : {};
+        console.log(localStorage.getItem('pageStatus'));
+        console.log(pageStatus);
+        if (pageStatus && pageStatus.hasOwnProperty('backState')) {
+            console.log('BACK PROPERTY ON LOCAL STORAGE');
+            window.history.replaceState({ page: 0, state: 'back' }, window.location.href, window.location.href);
+        }    */
+        
         let pageReloaded = false;
         let historyOp = '';
+        console.log(window.performance.navigation.type);
         if (window.performance.navigation.type === 1) {
+
+            // Values that need to be set when user reloads the page
             pageReloaded = true;
             historyOp = 'none'; 
 
-            let historyOnReload = localStorage.getItem('pageStatus');
-            localStorage.removeItem('pageStatus');
+            let historyOnReload = sessionStorage.getItem('pageStatus');
+            sessionStorage.removeItem('pageStatus');
 
             historyOnReload = JSON.parse(historyOnReload);
 
             if (historyOnReload) {
-            let totalStatesOnReload = historyOnReload.totalStates;
+                // We don't need this to clear total states and the rest of details (empty, initial, so on)
+                let totalStatesOnReload = historyOnReload.totalStates;
+                
+                if (totalStatesOnReload && Array.isArray(totalStatesOnReload) && totalStatesOnReload.length > 0) {
+          
+                    // Calculates current states and based on this, pages visited 
+                    let pagesVisited = 
+                        totalStatesOnReload.filter(currentState => currentState.page > 0).length +    
+                                        totalStatesOnReload.filter(currentState => {
+                                            let currentHistoryPage = window.history.state && window.history.state.page ? window.history.state.page : 0;
+                                            return currentState.page <= currentHistoryPage;
+                                        }).map(de => {
+                                            return de.state.filter((currentState, index) => {
+                                                if (de.page < window.history.state.page) {
+                                                    return index <= de.state.length - 1;
+                                                } else {
+                                                    let currentStateIndex = window.history.state && window.history.state.state && !isNaN(window.history.state.state) ? window.history.state.state : 0;
+                                                return index <= currentStateIndex;
+                                                }
+                                                
+                                            }).length;
+                                        }).reduce((acc, curr) => acc + curr);
 
-            let pagesVisited = 
-                totalStatesOnReload.filter(currentState => currentState.page > 0).length +    
-                totalStatesOnReload.map(currentState => currentState.state.length)
-                           .reduce((acc, curr) => acc + curr);
+                    // Returns back as much as pages visited, so gets to initial state
+                    window.history.go(-(pagesVisited));  
+                }
+            }
 
-            console.log(pagesVisited);
-            window.history.go(-(pagesVisited));
-        }
+            window.history.replaceState({ page: 0, state: 'back' }, window.location.href, window.location.href);
+            sessionStorage.clear();
 
             
-                
+/*
+            if (historyOnReload && historyOnReload.clearHistory) {
+                console.log('Cleared');
+                window.history.replaceState({ page: 0, state: 'back' }, window.location.href, window.location.href);
+                window.history.pushState(null, window.location.href, window.location.href);
+            }
+            
+                let pagesVisited = 
+                    totalStatesOnReload.filter(currentState => currentState.page > 0).length +    
+                    totalStatesOnReload.map(currentState => currentState.state.length)
+                                       .reduce((acc, curr) => acc + curr);
+
+                console.log(pagesVisited);
+                localStorage.setItem('bueno', 1);
+                window.history.go(-(pagesVisited));     */
+            
+
             // To calculate how many pages you have to go back in history
             // 1 per each push on filters page
             // 1 per each map shown in which the user has pushed go back
 
             // Map pages can be calculated base on the keys on totalStates. From 1, each key is 1 page user has seen
         }
+
+
         
 
         //let state = localStorage.getItem('pageStatus');
         //const navigation = window.performance.navigation.type;
-        console.log('Navigation access method');
-        console.log(window.performance.navigation.type);
+        //console.log('Navigation access method');
+        //console.log(window.performance.navigation.type);
      //   console.log('Page status');
      //   console.log(state);
 
@@ -775,11 +823,10 @@
             totalStates = totalStates.filter((currentState, index) => index <= page);
 
             let stateBeforeClick = window.history.state.state;
-            state = window.history.state && window.history.state.state !== undefined && window.history.state.state !== null && window.history.state.state !== 'initial' ? window.history.state.state + 1 : 0;
+            state = window.history.state && window.history.state.state !== undefined && window.history.state.state !== null && window.history.state.state !== 'initial' && !isNaN(window.history.state.state) ? window.history.state.state + 1 : 0;
             state = currentPageStates.state.length === 0 && totalStates[page] && Array.isArray(totalStates[page].state) && totalStates[page].state.length > 0 
                 ? 1
                 : state;
-            console.log('State: ' + state);
             let statesForPage = totalStates.find(currentState => currentState.page === window.history.state.page);
             if ((statesForPage && statesForPage.state && Array.isArray(statesForPage.state) && statesForPage.state.length - stateBeforeClick) > 1) {
                 // Replacing
@@ -910,7 +957,7 @@
                     totalStates.forEach(currentState => totalStatesLength += currentState.state ? currentState.state.length : 0);
 
                     console.log('Checking total length for states at page is correct: ' + totalStatesLength);
-                    localStorage.setItem('pageStatus', JSON.stringify({
+                    sessionStorage.setItem('pageStatus', JSON.stringify({
                         totalStates: totalStates,
                         lastSavedPage: { page: page, totalStates: totalStatesLength }
                         //initialStates: initialStates
@@ -1026,7 +1073,6 @@
 
         // Set the previous states when going back on history   
         const setPreviousStates = () => {
-            console.log('Setting previous states');
             
             if (totalStates && totalStates.length > 0) {
 
@@ -1120,7 +1166,7 @@
         //let clickedWithHistoryLoaded = false;
         let indexForHistory;
         let page = 0;
-        let state = 'initial';
+        let state = window.history.state && window.history.state.state === 'back' ? 'back' : 'initial';
 
         let windowPrecedence = false;
 
@@ -1128,20 +1174,21 @@
         let bySalarySelected = false;
         let byQualificationSelected = false;
 
-        let history = localStorage.getItem('pageStatus');
-        localStorage.removeItem('pageStatus');
+        let history = sessionStorage.getItem('pageStatus');
+        sessionStorage.removeItem('pageStatus');
 
         // History management
         if (history !== null && history !== undefined) {
             //if (pageReloaded) window.history.pushState({ page: 0, state: 'initial' }, window.location.href, window.location.href);
             history = JSON.parse(history);
-
             totalStates = !pageReloaded ? history.totalStates : [];
             currentPageStates = !pageReloaded ? currentPageStates : { page: 0, state: [] }
             windowPrecedence = !pageReloaded ? history.windowPrecedence : false;
             page = !pageReloaded ? (window.history.state && window.history.state.page && windowPrecedence ? window.history.state.page : history.lastSavedPage.page) : 0;
-            console.log('Page value is: ' + page);
-            state = !pageReloaded ? (window.history.state && window.history.state.state ? window.history.state.state : 'initial') : 'initial';
+            console.log('STATE BEFORE: ' + state);
+            state = window.history.state && window.history.state.state ? window.history.state.state : 'initial';
+            console.log('STATE AFTER: ' + state);
+            
             let index = 1;
             //initialStates = !pageReloaded ? history.initialStates : initialStates;
             //indexLimitWhenHistoryLoaded = previousStates.length;
@@ -1195,7 +1242,6 @@
                 }
 
                 if (totalStates.find(currentState => currentState.page === page) === undefined) {
-                    console.log('Always udefined');
                     if (lastPageStates) {
                         let initialStateForNewPage = lastPageStates.state[lastPageStates.state.length - 1];
                         totalStates.push({ page: page, state: [initialStateForNewPage] });       
@@ -1208,6 +1254,11 @@
             
         } else {
             window.history.replaceState({ page: page, state: state }, window.location.href, window.location.href);
+        }
+
+        if (window.history.state.state === 'back') {
+            console.log('Clearing history. Resetting initial state');
+            window.history.pushState({ page: 0, state: 'initial' }, window.location.href, window.location.href);
         }
 
         // Original buttons for filters
@@ -1232,16 +1283,20 @@
         // Onpopstate to be triggered when history changes
         window.onpopstate = (e) => {
 
+            if (window.history.state.state === 'back') {
+                window.history.back();
+            }
+
             console.log('Executing onpopstate');
-            console.log(historyOp);
+
             let previousState;
             historyOp = historyOp === '' ? 'regular' : historyOp;
 
             page = window.history.state && window.history.state.page ? window.history.state.page : 0
             state = window.history.state && window.history.state.state !== null && window.history.state !== undefined ? window.history.state.state : 'initial';
 
-            console.log('Values for page: ' + page);
-            console.log('Values for state: ' + state);
+            //console.log('Values for page: ' + page);
+            //console.log('Values for state: ' + state);
 
 
             switch (historyOp) {
@@ -1300,8 +1355,6 @@
                     break;
                 default: 
                     break;
-                default: 
-                    break;
             }
             
             console.log(previousState);
@@ -1328,12 +1381,12 @@
                 }
                 if (window.history.state && window.history.state.state === 'initial') {
                     let totalStatesLength = 0;
-                totalStates.forEach(currentState => totalStatesLength += currentState.state.length);
-                console.log('Checking total length for states at page is correct: ' + totalStatesLength);
+                    totalStates.forEach(currentState => totalStatesLength += currentState.state.length);
+                    console.log('Checking total length for states at page is correct: ' + totalStatesLength);
 
-                localStorage.setItem('pageStatus', JSON.stringify({
+                    sessionStorage.setItem('pageStatus', JSON.stringify({
                     totalStates: totalStates,
-                    lastSavedPage: { page: page, totalStates: totalStatesLength }
+                    lastSavedPage: { page: page, totalStates: totalStatesLength },
                     //lastSavedState: lastSavedState
                 }));
 
@@ -1415,7 +1468,7 @@
         
         // Onbeforeunload    to be triggered when unloading every page
         window.onbeforeunload = (e) => {
-
+          
             /*
             console.log(lastSavedState);
             console.log(window.history.state);
@@ -1448,7 +1501,6 @@
                 
                 const executeOnBeforeUnload = window.history.state && 
                                               window.history.state.state && 
-
                                               window.history.state.state === lastPageStates.state.length - 1 ? true : false;
 
                 
@@ -1464,7 +1516,7 @@
                     console.log('Checking total length for states at page is correct: ' + totalStatesLength);
                     page = pageReloaded ? 0 : page;
 
-                    localStorage.setItem('pageStatus', JSON.stringify({
+                    sessionStorage.setItem('pageStatus', JSON.stringify({
                         totalStates: totalStates,
                         lastSavedPage: { page: page, totalStates: totalStatesLength }
                         //initialStates: initialStates
@@ -1494,12 +1546,24 @@
 
                 }
 
-            } else {
-                console.log('Reloading page. Clearing history');
-            }
+            } 
 
         };
 
+    
+        if (!localStorage.getItem('pageStatus')) {
+            // Values that need to be set when user reloads the page
+            sessionStorage.setItem('pageStatus', JSON.stringify({
+                totalStates: totalStates,
+                lastSavedPage: { page: 0, state: 'initial' }
+            }));
+        }
+
+        window.onunload = () => {
+            
+        }
+
+        
     </script>
 </body>
 </html>
