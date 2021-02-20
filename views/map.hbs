@@ -202,7 +202,7 @@
                 }
                 */
 
-                localStorage.setItem('pageStatus', JSON.stringify({
+                sessionStorage.setItem('pageStatus', JSON.stringify({
                     totalStates: totalStates,
                     lastSavedPage: { page: page + 1, totalStates: 0 }
                     //initialStates: initialStates
@@ -230,7 +230,7 @@
         let historyFiltered = false;
         let mapsContainer = document.querySelectorAll('div.dv-lvl-2.map-container')[0];
 
-        let history = localStorage.getItem('pageStatus');
+        let history = sessionStorage.getItem('pageStatus');
         //localStorage.removeItem('pageStatus');
         let totalStates;
         let intialStates;
@@ -241,6 +241,7 @@
         // History management
         if (history !== null && history !== undefined) {
             history = JSON.parse(history);
+            console.log(history);
             totalStates = history.totalStates;
             page = history.lastSavedPage.page;
             totalStatesOnPreviousPage = history.lastSavedPage.totalStates;
@@ -382,7 +383,8 @@
                 console.log('Sending shit');
                 totalStates = totalStates.length > 0 ? totalStates : [];
 
-                localStorage.setItem('pageStatus', JSON.stringify({
+                sessionStorage.setItem('pageStatus', JSON.stringify({
+
                     totalStates: totalStates,
                     lastSavedPage: { page: page, totalStates: totalStatesOnPreviousPage },
                     windowPrecedence: true
