@@ -73,6 +73,7 @@ const onBeforeSendHeadersCallback = function(details) {
     console.log('Before sending headers');
 
     mainHeaders = details.requestHeaders;
+    console.log(mainHeaders);
     const customHeaders = { name: 'Authorization', value: encHex };
     mainHeaders.push(customHeaders);
     return { requestHeaders: mainHeaders }

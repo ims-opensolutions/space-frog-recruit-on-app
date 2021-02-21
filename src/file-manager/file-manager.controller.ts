@@ -496,13 +496,18 @@ export class FileManagerController {
         //     throw new ForbiddenException('Forbidden');
         // }
 
-        // const regExpResult = cookie.match(/(_p=[^;]*;?){1}/g);
+        // const regExpResult = cookie.match(/((_p=|_s=)[^;]*;?){1}/g);
 
         // if (!regExpResult) {
         //     throw new ForbiddenException('Forbidden');
         // }
 
-        // let payload = regExpResult.toString();
+        // let payload;
+        // if (regExpResult.length > 1) {
+        //     payload = regExpResult.find(reg => reg.indexOf('_p=') > -1);
+        // } else {
+        //     payload = regExpResult.toString();
+        // }
     
         // const key = payload.substring(3, payload.length - 10);
 

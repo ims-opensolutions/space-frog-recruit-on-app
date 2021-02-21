@@ -428,57 +428,14 @@
     <script>
 
 
-        /*
-
-            Usage of lastSavedState in order
-
-            1. Declared
-            2. handleFilterClick
-            3. showInMapButton
-            4. onpopstate
-            5. onbeforeunload
-
-            Flow
-
-            Payload to pass through pages
-
-            previousStates -> total states
-            lastSavedPage -> { page: 0, totalStates: previousStates.length }
+    
 
 
 
-        */
-
-        /*
-        const navigation = window.performance.navigation.type;
-        let pageReloaded = false;
-        let historyOp = '';
-        console.log(window.history.state);
-
-        console.log(navigation);
-        console.log(window.history.state)
-        
-        if (navigation === 1 && window.history.state && window.history.state.state !== undefined && window.history.state.state !== null) {
-
-            console.log('Reseting');
-            pageReloaded = true;
-            let firstPageIndex = !isNaN(window.history.state.state) ? window.history.state.state : 0;
-            window.history.go(-(firstPageIndex + 1));
-            historyOp = 'none';
-
+        if (document.cookie.indexOf('_s') === -1) {
+            console.log('Session purged');
+            sessionStorage.clear();
         }
-        */
-
-
-/*
-        let pageStatus = localStorage.getItem('pageStatus');
-        pageStatus = pageStatus ? JSON.parse(pageStatus) : {};
-        console.log(localStorage.getItem('pageStatus'));
-        console.log(pageStatus);
-        if (pageStatus && pageStatus.hasOwnProperty('backState')) {
-            console.log('BACK PROPERTY ON LOCAL STORAGE');
-            window.history.replaceState({ page: 0, state: 'back' }, window.location.href, window.location.href);
-        }    */
         
         let pageReloaded = false;
         let historyOp = '';
@@ -499,6 +456,8 @@
                 let totalStatesOnReload = historyOnReload.totalStates;
                 
                 if (totalStatesOnReload && Array.isArray(totalStatesOnReload) && totalStatesOnReload.length > 0) {
+
+                    console.log(totalStatesOnReload);
           
                     // Calculates current states and based on this, pages visited 
                     let pagesVisited = 
@@ -512,13 +471,13 @@
                                                     return index <= de.state.length - 1;
                                                 } else {
                                                     let currentStateIndex = window.history.state && window.history.state.state && !isNaN(window.history.state.state) ? window.history.state.state : 0;
-                                                return index <= currentStateIndex;
+                                                    return index <= currentStateIndex;
                                                 }
                                                 
                                             }).length;
                                         }).reduce((acc, curr) => acc + curr);
 
-                    // Returns back as much as pages visited, so gets to initial state
+                    // Returns back as much as pages visited, so gets to initial state 
                     window.history.go(-(pagesVisited));  
                 }
             }
@@ -1063,12 +1022,20 @@
 
         // Sets the cookie to authorize request
         const setSecurityCookie = () => {
-
             let payload = 'encodedhere' + addAleatoryHash();
             var currentTime = new Date();
             let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
             let newDateObject = new Date(newDate);
-            document.cookie = '_p=' + payload + ';' + 'expires=' + newDateObject.toGMTString();
+            document.cookie = '_p=' + payload + ';' + 'path=/file-manager; samesite=strict; expires=' + newDateObject.toGMTString();
+        }
+
+        // Sets the cookie to handle session storage
+        const setSessionStorageCookie = () => {
+            var currentTime = new Date();
+            let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
+            let newDateObject = new Date(newDate);
+            document.cookie = '_s=true; path=/file-manager; samesite=strict; expires=' + newDateObject.toGMTString();
+            
         }
 
         // Set the previous states when going back on history   
@@ -1185,9 +1152,7 @@
             currentPageStates = !pageReloaded ? currentPageStates : { page: 0, state: [] }
             windowPrecedence = !pageReloaded ? history.windowPrecedence : false;
             page = !pageReloaded ? (window.history.state && window.history.state.page && windowPrecedence ? window.history.state.page : history.lastSavedPage.page) : 0;
-            console.log('STATE BEFORE: ' + state);
             state = window.history.state && window.history.state.state ? window.history.state.state : 'initial';
-            console.log('STATE AFTER: ' + state);
             
             let index = 1;
             //initialStates = !pageReloaded ? history.initialStates : initialStates;
@@ -1244,7 +1209,7 @@
                 if (totalStates.find(currentState => currentState.page === page) === undefined) {
                     if (lastPageStates) {
                         let initialStateForNewPage = lastPageStates.state[lastPageStates.state.length - 1];
-                        totalStates.push({ page: page, state: [initialStateForNewPage] });       
+                        totalStates.push({ page: page, state: [initialStateForNewPage] });    
                     } else {
                         console.log('No filters have been pushed to history');
                     }
@@ -1357,7 +1322,6 @@
                     break;
             }
             
-            console.log(previousState);
             if (previousState !== undefined) {
                 if (previousState.hasOwnProperty('city') || previousState.hasOwnProperty('salary') || previousState.hasOwnProperty('qualification')) { 
                     byCitySelected = previousState.city ? true : false;
@@ -1468,7 +1432,9 @@
         
         // Onbeforeunload    to be triggered when unloading every page
         window.onbeforeunload = (e) => {
-          
+            setSecurityCookie();
+            setSessionStorageCookie();
+
             /*
             console.log(lastSavedState);
             console.log(window.history.state);
@@ -1505,9 +1471,6 @@
 
                 
                 console.log('Keeping history');
-
-                setSecurityCookie();
-
         
                 if (!historyFiltered || executeOnBeforeUnload) {
 
@@ -1521,6 +1484,7 @@
                         lastSavedPage: { page: page, totalStates: totalStatesLength }
                         //initialStates: initialStates
                     }));
+
 
                     /*
                     let previousState = previousStates[previousStates.length - 1];
@@ -1546,22 +1510,24 @@
 
                 }
 
+                if (!sessionStorage.getItem('pageStatus')) {
+                    // Values that need to be set when user reloads the page
+                    sessionStorage.setItem('pageStatus', JSON.stringify({
+                        totalStates: totalStates,
+                        lastSavedPage: { page: 0, state: 'initial' }
+                    }));
+                }
+
             } 
 
         };
 
-    
-        if (!localStorage.getItem('pageStatus')) {
-            // Values that need to be set when user reloads the page
-            sessionStorage.setItem('pageStatus', JSON.stringify({
-                totalStates: totalStates,
-                lastSavedPage: { page: 0, state: 'initial' }
-            }));
-        }
+  
 
-        window.onunload = () => {
-            
-        }
+
+    
+
+
 
         
     </script>

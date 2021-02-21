@@ -189,8 +189,9 @@
         // Sets the correct state to maintain correct history status
         const setStateOnBackButtonClick = () => {
             let backButton = document.querySelector('div.dv-lvl-1.button-back');
-            backButton.onclick = () => {
-
+            backButton.onclick = () => {          
+                setSecurityCookie();
+                setSessionStorageCookie();       
                 totalStates = totalStates.length > 0 ? totalStates : [];
                 //const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState + 1 : previousStates.length;
 
@@ -215,6 +216,56 @@
                 window.location = 'http://localhost:3000/file-manager/generate';
 
             }
+        }
+
+        // Sets the cookie to authorize request
+        const setSecurityCookie = () => {
+                let payload = 'encodedhere' + addAleatoryHash();
+                var currentTime = new Date();
+                let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
+                let newDateObject = new Date(newDate);
+                document.cookie = '_p=' + payload + '; path=/file-manager; samesite=strict; expires=' + newDateObject.toGMTString();
+            
+        }
+        // Sets the cookie to handle session storage
+        const setSessionStorageCookie = () => {
+                var currentTime = new Date();
+                let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
+                let newDateObject = new Date(newDate);
+                document.cookie = '_s=true; path=/file-manager; samesite=strict; expires=' + newDateObject.toGMTString();
+            
+        }
+
+        // Ads 10 length aleatory hash to base64 encoded cookie
+        const addAleatoryHash = () => {
+            let hash = '';
+
+            const options = {
+                numbers : {
+                    min: 48,
+                    max: 58
+                },
+                upper: {
+                    min: 65,
+                    max: 91
+                },
+                lower: {
+                    min: 97,
+                    max: 123
+                }
+            };
+
+
+            for (let i = 0; i < 10; i++) {
+                const chars = ['numbers', 'upper', 'lower'];
+                let index = Math.floor(Math.random() * 3);
+                let max = options[chars[index]].max; 
+                let min = options[chars[index]].min;
+                let asciiCode = Math.floor(Math.random() * (max - min) + min);
+                let nextChar = String.fromCharCode(asciiCode);
+                hash += nextChar;
+            }
+            return hash;
         }
 
         // Executes init process
@@ -376,11 +427,13 @@
         // Onbeforeunload to be triggered when unloading every page
         window.onbeforeunload = (e) => {
             console.log('Executing onbeforeunload');
+            setSecurityCookie();
+            setSessionStorageCookie();
 
             //const lastSavedState = history && history.hasOwnProperty('lastSavedState') ? history.lastSavedState : previousStates.length - 1;
             
             if (!historyFiltered) {
-                console.log('Sending shit');
+                
                 totalStates = totalStates.length > 0 ? totalStates : [];
 
                 sessionStorage.setItem('pageStatus', JSON.stringify({
