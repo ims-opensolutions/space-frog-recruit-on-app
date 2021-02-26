@@ -3,7 +3,7 @@ const addGoogleMapsApiScript = () => {
     let polyfillScript = document.createElement('script');
     polyfillScript.src = "https://polyfill.io/v3/polyfill.min.js?features=default";
     let googleScript = document.createElement('script');
-    googleScript.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=&v=weekly"; // Insert api key here
+    googleScript.src = "https://maps.googleapis.com/maps/api/js?key=NONONO-YPIIz34&callback=initMap&libraries=&v=weekly"; // Insert api key here
     googleScript.defer = true;
 
     document.head.appendChild(polyfillScript);
@@ -58,7 +58,7 @@ const setStateOnBackButtonClick = () => {
 
 // Sets the cookie to authorize request
 const setSecurityCookie = () => {
-        let payload = 'encodehere' + addAleatoryHash();
+        let payload = 'encodehere==' + addAleatoryHash();
         var currentTime = new Date();
         let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
         let newDateObject = new Date(newDate);
@@ -109,9 +109,10 @@ const addAleatoryHash = () => {
 // Executes init process
 const init = () => {
     addGoogleMapsApiScript();
-    setErrorMessageOnLoad();
     setStateOnBackButtonClick();
 }
+
+setErrorMessageOnLoad();
 
 // Global variables
 let enableOnpopstate = false;
@@ -151,7 +152,6 @@ try {
         
         mapsContainer.childNodes[0].style.display = 'none'; 
 
-        // const setWaitingSpinner = (mapsContainer) => {}
         setWaitingSpinner();
         
         const geocoder = new google.maps.Geocoder();
@@ -187,11 +187,15 @@ try {
                 let user = response.object.find(currentUser => userId === currentUser.id);
 
                 geocoder.geocode({ address: user.city }, (results, status) => {
+                    console.log(results);
+                    console.log(status);
                     if (status === "OK") {
                         new google.maps.Marker({
                             map: map,
                             position: results[0].geometry.location
                         });
+                        mapsContainer.childNodes[0].style.display = 'block'; 
+                        document.querySelector('i.fas.fa-spinner').style.display = 'none';
                     } else {
                     alert("Geocode was not successful for the following reason: " + status);
                     }
