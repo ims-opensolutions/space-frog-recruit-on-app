@@ -9,7 +9,7 @@
         "cookies",
         "webRequest",
         "webRequestBlocking",
-        "http://localhost:3000/file-manager/generate"
+        "https://localhost:3000/file-manager/generate"
     ],
     "background": {
         "scripts": [

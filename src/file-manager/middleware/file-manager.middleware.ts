@@ -10,7 +10,7 @@ export class FileManagerMiddleware implements NestMiddleware {
     const endpointKeys = ['generate', 'map', 'render'];     
     endpoint = endpointKeys.find(endpointKey => request['baseUrl'].indexOf(endpointKey) > -1);
 
-    const url = 'http://localhost:3000' + request['baseUrl'];
+    const url = 'https://localhost:3000' + request['baseUrl'];
     const method = request.method;
 
     const headersToLower = Object.keys(request.headers).map(headerKey => headerKey.toLowerCase());

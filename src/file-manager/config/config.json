@@ -1,17 +1,17 @@
 {
     "GET": {
         "generate": {
-            "resource": "http://localhost:3000/file-manager/generate",
+            "resource": "https://localhost:3000/file-manager/generate",
             "method": "GET"
         },
         "map": {
-            "resource": "http://localhost:3000/file-manager/map/*",
+            "resource": "https://localhost:3000/file-manager/map/*",
             "method": "GET"
         }
     },
     "POST": {
         "generate": {
-            "resource": "http://localhost:3000/file-manager/generate",
+            "resource": "https://localhost:3000/file-manager/generate",
             "method": "POST",
             "requestBody": {
                 "raw": [
@@ -22,7 +22,7 @@
             }
         },
         "render": {
-            "resource": "http://localhost:3000/file-manager/render",
+            "resource": "https://localhost:3000/file-manager/render",
             "method": "POST",
             "requestBody": {
                 "raw": [

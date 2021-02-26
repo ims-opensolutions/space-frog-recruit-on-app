@@ -1,7 +1,7 @@
 const onBeforeRequestFilter = { urls: [
-  "http://localhost:3000/file-manager/generate",
-  "http://localhost:3000/file-manager/render",
-  "http://localhost:3000/file-manager/map/*"
+  "https://localhost:3000/file-manager/generate",
+  "https://localhost:3000/file-manager/render",
+  "https://localhost:3000/file-manager/map/*"
 ] };
 
 let encHex;
@@ -64,24 +64,25 @@ const onBeforeRequestCallback = function(details) {
 }
 
 const onBeforeSendHeadersFilter = { urls: [
-  "http://localhost:3000/file-manager/generate",
-  "http://localhost:3000/file-manager/render",
-  "http://localhost:3000/file-manager/map/*"
+  "https://localhost:3000/file-manager/generate",
+  "https://localhost:3000/file-manager/render",
+  "https://localhost:3000/file-manager/map/*"
 ] };
 const onBeforeSendHeadersOptions = ['blocking', 'requestHeaders', 'extraHeaders'];
 const onBeforeSendHeadersCallback = function(details) {
     console.log('Before sending headers');
 
     mainHeaders = details.requestHeaders;
+    console.log(mainHeaders);
     const customHeaders = { name: 'Authorization', value: encHex };
     mainHeaders.push(customHeaders);
     return { requestHeaders: mainHeaders }
 }
 
 const onSendHeadersFilter = { urls: [
-  "http://localhost:3000/file-manager/generate",
-  "http://localhost:3000/file-manager/render",
-  "http://localhost:3000/file-manager/map/*"
+  "https://localhost:3000/file-manager/generate",
+  "https://localhost:3000/file-manager/render",
+  "https://localhost:3000/file-manager/map/*"
 ] };
 const onSendHeadersCallback = function(details) {
     console.log('On sending headers');

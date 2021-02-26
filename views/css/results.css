@@ -1,0 +1,323 @@
+body,
+html {
+    padding: 0;
+    margin: 0;
+    background: #e6e6e6;
+    font-family: 'Barlow Condensed', sans-serif;
+}
+
+div.dv-lvl-0.recruit-on-header {
+    max-width: 1920px;
+    width: 100%;
+    height: 100px;
+    background: #252fc2;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    box-shadow: 0px 0px 10px 0px #000;
+    z-index: 2;
+}
+
+div.dv-lvl-0.recruiter-on-body {
+    padding: .1px;
+    box-shadow: 0px 0px 5px -1px #000;
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+div.dv-lvl-1.page-title {
+    margin: 40px 5%;
+    width: 27%;
+    background: #252fc2;
+    color: #e6e6e6;
+    box-shadow: 0px 2px 10px -6px #000;
+}
+
+h1.he-lvl-2.page-title-header {
+    padding: 20px;
+}
+
+div.dv-lvl-1.filters-text-container {
+    margin: 10px 5%;
+    width: 27%;
+}
+
+p.par-lvl-2.filters-text {
+    padding: 10px;
+    font-size: 1.3em;
+}
+
+div.dv-lvl-1.recruit-on-logo {
+    margin-left: 30px;
+    color: #e6e6e6;
+}
+
+img.img-lvl-2.recruit-on-img {
+    height: 100px;
+}
+
+p.par-lvl-2.logo-paragraph {
+    padding: 0;
+    margin: 0;
+    padding-bottom: .2em;
+    letter-spacing: .4em;
+}
+
+div.dv-lvl-1.recruiter-result-header {
+    width: 80%;
+    background: #fff;
+    margin: 40px auto;
+    box-shadow: 0px 0px 10px -5px #000;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+div.dv-lvl-2.recruiter-result-button-wrapper {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+div.dv-lvl-2.recruiter-result-status-wrapper {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 20px;
+    margin-top: 0;
+    color: #60d233;
+    display: none;
+}
+
+div.enabled-by-city,
+div.enabled-by-salary,
+div.enabled-by-qualification {
+    opacity: 0;
+}
+
+button.by-city {
+    width: 120px;
+    display: block;
+    padding: .7em;
+    background: #b43a3a;
+    color: #e6e6e6;
+    border: none;
+    box-shadow: 0px 0px 3px 2px #ba6868;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+}
+
+button.by-city:hover {
+    background: #c18282;
+}
+
+button.by-city:active {
+    outline: none;
+    border: none;
+    outline-offset: none;
+    background: #8c1a1a;
+    box-shadow: 0px 0px 4px 3px #632e2e;
+}
+
+button.by-city:focus {
+    border: none;
+    outline: none;
+    outline-offset: none;
+    background: #8c1a1a;
+}
+
+button.by-salary {
+    width: 120px;
+    display: block;
+    padding: .7em;
+    background: #b43a3a;
+    color: #e6e6e6;
+    border: none;
+    box-shadow: 0px 0px 3px 2px #ba6868;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+}
+
+button.by-salary:hover {
+    background: #c18282;
+}
+
+button.by-salary:active {
+    outline: none;
+    border: none;
+    outline-offset: none;
+    background: #8c1a1a;
+    box-shadow: 0px 0px 4px 3px #632e2e;    
+}
+
+button.by-salary:focus {
+    border: none;
+    outline: none;
+    outline-offset: none;
+    background: #8c1a1a;
+}
+
+button.by-qualification {
+    width: 120px;
+    display: block;
+    padding: .7em;
+    background: #b43a3a;
+    color: #e6e6e6;
+    border: none;
+    box-shadow: 0px 0px 3px 2px #ba6868;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+}
+
+button.by-qualification:hover {
+    background: #c18282;
+
+}
+
+button.by-qualification:active {
+    outline: none;
+    border: none;
+    outline-offset: none;
+    background: #8c1a1a;
+    box-shadow: 0px 0px 4px 3px #632e2e;
+}
+
+button.by-qualification:focus {
+    border: none;
+    outline: none;
+    outline-offset: none;
+    background: #8c1a1a;
+}
+
+div.dv-lvl-1.recruiter-result-banner {
+    height: 50px;
+    width: 90%;
+    max-width: 1920px;
+    background: #fff;
+    box-shadow: 0px 2px 10px -6px #000;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+}
+
+div.dv-lvl-1.recruiter-result-banner p {
+    margin-left: 30px;
+}
+
+div.dv-lvl-1.recruiter-result-items-container {
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto 40px auto;
+}
+
+h2.he-lvl-2.recruiter-city-item-header {
+    max-width: 1920px;
+    background: #fff;
+    box-shadow: 0px 2px 10px -6px #000;
+    padding: 20px;
+    text-transform: uppercase;
+    font-size: 1.1em;
+    letter-spacing: .5em;
+    margin: 40px 5%;
+    width: 27%;
+    background: #252fc2;
+    color: #e6e6e6;
+}
+
+div.dv-lvl-2.recruiter-result-item {
+    width: 90%;
+    margin: 40px auto;
+    background: #fff;
+    box-shadow: 0px 2px 10px -6px #000;
+    display: flex;
+}
+
+div.dv-lvl-2.show-in-map {
+    width: 29%;
+    box-shadow: 0px 2px 10px -6px #000;
+    display: flex;
+    margin-left: 5%;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    background: #dadcff;
+}
+
+div.dv-lvl-2.map-container {
+    width: 90%;
+    margin: 40px auto;
+    background: #efc8c8;
+    box-shadow: 0px 2px 10px -6px #000;
+    display: flex;
+    height: 600px;
+}
+
+div.dv-lvl-2.show-in-map:hover {
+    background: #c1c4ff;
+    cursor: pointer;
+}
+
+div.dv-lvl-2.show-in-map p {
+    font-size: 1.6em;
+    margin-right: 10px;
+    text-transform: uppercase;
+    color: #555eff;
+}
+
+div.dv-lvl-2.show-in-map i {
+    font-size: 2em;
+    color: #555eff;
+}
+
+div.dv-lvl-3.recruiter-result-item-info {
+    width: 80%;
+}
+
+div.dv-lvl-3.recruiter-result-item-qualification {
+    width: 20%;
+}
+
+div.dv-lvl-3.recruiter-result-item-qualification.green {
+    background: linear-gradient(90deg, #c2e9b3, #54cf23);
+}
+
+div.dv-lvl-3.recruiter-result-item-qualification.yellow {
+    background: linear-gradient(90deg, #fffbc6, #eae40b);
+}
+
+div.dv-lvl-3.recruiter-result-item-qualification.red {
+    background: linear-gradient(90deg, #da9f8d, #d41010);
+}
+
+div.dv-lvl-3.recruiter-result-item-qualification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column wrap;
+}
+
+div.dv-lvl-4.recruiter-result-item-info-data-row {
+    margin: 20px 20px;
+    display: flex;
+}
+
+p.p-name {
+    margin-right: 180px;
+}
+
+p.p-mail {
+    margin-right: 180px;
+}
+
+p.p-age {
+    margin-right: 180px;
+}
+
+p.p-qualification {
+    text-align: center;
+}
