@@ -5,6 +5,7 @@
 # Certs
 /secrets
 /secrets/*
+/secrets/*.pem
 
 # Logs
 logs
