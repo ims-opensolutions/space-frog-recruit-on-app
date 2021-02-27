@@ -2,11 +2,6 @@
 /dist
 /node_modules
 
-# Certs
-/secrets
-/secrets/*
-/secrets/*.pem
-
 # Logs
 logs
 *.log
@@ -37,3 +32,8 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Certs
+/secrets
+/secrets/*
+/secrets/*.pem
