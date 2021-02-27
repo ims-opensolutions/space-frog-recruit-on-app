@@ -35,6 +35,3 @@ lerna-debug.log*
 
 # Certs
 /secrets
-/secrets/*
-/secrets/*.pem
-./secrets
