@@ -2,8 +2,9 @@
 /dist
 /node_modules
 
-#Certs
+# Certs
 /secrets
+/secrets/*
 
 # Logs
 logs
