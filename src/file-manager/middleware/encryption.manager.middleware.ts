@@ -1,9 +1,11 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
 import { NextFunction } from "express";
 import * as config from '../config/config.json';
+import { Request, Response } from 'express';
+
 
 @Injectable()
-export class FileManagerMiddleware implements NestMiddleware {
+export class EncryptionManagerMiddleware implements NestMiddleware {
   use(request: Request, response: Response, next: NextFunction) {
 
     let endpoint;
