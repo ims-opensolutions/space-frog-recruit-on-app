@@ -82,6 +82,7 @@ export class FileManagerService {
 
         } catch (err) {
             console.log(`An error occurred when generating the results`);
+            throw new InternalServerErrorException(`Are you stupid fucking PUNK?`)
             console.log(`Error details here: ${err}`);
         }
 
