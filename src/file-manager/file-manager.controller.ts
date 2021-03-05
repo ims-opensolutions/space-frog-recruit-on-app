@@ -16,8 +16,9 @@ export class FileManagerController {
 
     @Get('upload')
     @Render('upload')
-    getUploadForm(@Query() name: string) {
-        return { name: name };
+    async getUploadForm(@Query() name: string) {
+        const exist = await this.fileManagerService.isThereAnyRecordInDatabase();
+        return exist ? { name: name, visible: 'visible' } : { name: name };
     }
 
     @Get('map/:id')
@@ -27,8 +28,9 @@ export class FileManagerController {
     @Post('generate')
     @Render('results')
     @UseInterceptors(FileInterceptor('excel-file'))
-    async generateResults(@UploadedFile() file) {
-        return await this.fileManagerService.generateResults(file);
+    async generateResults(@UploadedFile() file, @Body('mode') mode?: string) {
+        console.log(`MODE ${mode}`);
+        return await this.fileManagerService.generateResults(file, mode);
     }
 
     @Post('render')

@@ -5,7 +5,7 @@ import * as path from 'path';
 
 export class FileManagerRepository {
 
-    async handleIncomingDocument(candidates: Candidate[]) {
+    async handleIncomingDocument(candidates: Candidate[], mode?: string) {
 
         const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
 
@@ -15,7 +15,8 @@ export class FileManagerRepository {
             fs.readFile(databaseUrl, 'utf8', (err, data) => {
                 if (err)
                     throw err;
-                if (data) {
+                if (mode && mode === 'keep' && data) {
+                    console.log(`Keeping data. Updating with changed values`);
                     userDatabase = JSON.parse(data);
     
                     userDatabase.forEach((currentUser) => {
@@ -37,6 +38,7 @@ export class FileManagerRepository {
                 }
                 else {
                     // Database is empty
+                    console.log(`Overwritting data.`);
                     userDatabase = candidates;
                 }
     
@@ -77,8 +79,6 @@ export class FileManagerRepository {
 
         });
 
-        console.log(returnedData);
-
         if (returnedData) {
             return { data: returnedData };
         }
@@ -111,5 +111,48 @@ export class FileManagerRepository {
         });
 
         return returnedData;
+    }
+
+    async isThereAnyRecordInDatabase(): Promise<boolean> {
+
+        const databaseUrl = path.join(__dirname, '../../', 'database/local-database.json');
+
+        let returnedData = await new Promise(function(resolve, reject) {
+
+            fs.readFile(databaseUrl, 'utf8', (err, data) => {
+
+                try {
+
+                    if (err) {
+                        throw err;
+                    }
+    
+                    if (err) {
+                        reject(err); 
+                     } else {
+                        if (data !== null && data !== undefined && typeof data === 'string') {
+                            resolve(JSON.parse(data));
+                        }
+                     }
+
+                } catch (err) {
+                    console.log(`There has been an error while reading the data`);
+                    console.log(`Details here: ${err}`);
+                }
+
+                resolve(undefined);
+                 
+            });
+
+        }).catch(err => {
+            console.log(`There has been an error while reading the data`);
+            console.log(`Details here: ${err}`);
+        });
+
+        return returnedData !== undefined && 
+               returnedData !== null && 
+               Array.isArray(returnedData) && 
+               Object.keys(returnedData[0]).includes('id');
+   
     }
 }

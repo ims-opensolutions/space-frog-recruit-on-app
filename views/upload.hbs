@@ -38,7 +38,7 @@
                     <p>Please, select a file to upload. Results will be displayed as soon as they are processed.</p>
                 </div>
 
-                <form name="upload" action="/file-manager/generate" method="POST" enctype="multipart/form-data">
+                <form name="upload" id="upload" action="/file-manager/generate" method="POST" enctype="multipart/form-data">
                     <div class="dv-lvl-3 input-box">
                         <button type="button" class="upload-button">Upload file</button>
                         <input class="excel-file" type="file" name="excel-file" />
@@ -54,36 +54,33 @@
 
             </div>
 
-            <!-- Status for database panel -->
-            <div class="dv-lvl-1 database-status-panel">
+            <!-- Status for database container -->
+            <div class="dv-lvl-1 database-status {{ visible }}">
 
-                <p class="par-lvl-2 database-status-text">There is information already stored in database</p>
-            </div>
-
-            <!-- Check DAMN boxes -->
-            <form name="upload" action="/file-manager/generate" method="POST">
-
-            <div class="dv-lvl-1 database-status-checkbox">
-                <div class="dv-lvl-2 database-status-checbox-n1">
-                    {{!-- <label>
-                        <input type="radio" value="demn" name="sample" id="sample-cb"/>Keep
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" value="demn" name="sample" id="sample-cb"/>Overwrite
-                    </label> --}}
-                    <label class="lbl-lvl-3 input-container">Keep
-                        <input type="radio" value="keep"  name="keep">
-                        <span class="spn-lvl-4 span-checkmark"></span>
-                    </label>
-                    <label class="lbl-lvl-3 input-container">Overwrite
-                        <input type="radio" value="overwrite" name="overwrite">
-                        <span class="spn-lvl-4 span-checkmark"></span>
-                    </label>
-
+                <!-- Status for database -->
+                <div class="dv-lvl-1 database-status-panel">
+                    <p class="par-lvl-2 database-status-text">There is information already stored in database</p>
                 </div>
+
+                <!-- Checkboxes -->
+                <div class="dv-lvl-1 database-status-checkbox">
+
+                    <div class="dv-lvl-2 database-status-checbox-n1">
+
+                        <label class="lbl-lvl-3 input-container input-keep">Keep
+                            <input type="radio" value="keep"  name="mode">
+                            <span class="spn-lvl-4 span-checkmark"></span>
+                        </label>
+
+                        <label class="lbl-lvl-3 input-container input-overwrite">Overwrite
+                            <input type="radio" value="overwrite" name="mode">
+                            <span class="spn-lvl-4 span-checkmark"></span>
+                        </label>
+
+                    </div>
+                </div>
+
             </div>
-            </form>
 
         </div>
     </div>

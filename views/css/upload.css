@@ -50,6 +50,10 @@ div.dv-lvl-1.upload-panel-container {
     box-shadow: 2px 2px 12px -5px #000;
 }
 
+div.dv-lvl-1.database-status {
+    display: none;
+}
+
 div.dv-lvl-1.database-status-panel {
     margin: 50px auto;
     background: #000;
@@ -152,6 +156,9 @@ div.dv-lvl-3.input-box {
     padding: .8em 1.2em;
 }
 
+div.dv-lvl-3.input-box.hidden {
+    display: none;
+}
 
 div.dv-lvl-3.input-box .excel-file {
     display: none;

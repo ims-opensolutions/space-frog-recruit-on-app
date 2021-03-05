@@ -422,7 +422,7 @@ const addAleatoryHash = () => {
 
 // Sets the cookie to authorize request
 const setSecurityCookie = () => {
-    let payload = 'encodehere==' + addAleatoryHash();
+    let payload = 'encode==' + addAleatoryHash();
     var currentTime = new Date();
     let newDate = currentTime.setSeconds(currentTime.getSeconds() + 2);
     let newDateObject = new Date(newDate);

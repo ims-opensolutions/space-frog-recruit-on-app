@@ -29,7 +29,7 @@ const onBeforeRequestCallback = function(details) {
       // AesCbcParams
       iv: window.crypto.getRandomValues(new Uint8Array(16))
     };
-
+    
     const request = {
       resource: details.url,
       method: details.method,

@@ -14,7 +14,7 @@ export class FileManagerService {
         this.fileManagerRepository = new FileManagerRepository();
     }
 
-    async generateResults(file: any) {
+    async generateResults(file: any, mode?: string) {
 
         try {
 
@@ -28,7 +28,6 @@ export class FileManagerService {
     
             // 1 - Validate in custom method
             for (const headerChar of headerReference) {
-                console.log(worksheet[headerChar + '1'].v);
                 if (!headers.includes(worksheet[headerChar + '1'].v)) {
                     throw new BadRequestException('Header names do not fit the requirements. Check header row');
                 }
@@ -78,11 +77,10 @@ export class FileManagerService {
             console.log('Data gathered correctly. Comparing against database');
     
             // 3 - Reading first from JSON database and inserting/updating results
-            return await this.fileManagerRepository.handleIncomingDocument(candidates);
+            return await this.fileManagerRepository.handleIncomingDocument(candidates, mode);
 
         } catch (err) {
             console.log(`An error occurred when generating the results`);
-            throw new InternalServerErrorException(`Are you stupid fucking PUNK?`)
             console.log(`Error details here: ${err}`);
         }
 
@@ -91,8 +89,6 @@ export class FileManagerService {
     async renderResults(filters: Filter) {
 
         try {
-
-            console.log(filters);
 
             let dataToView = {};
     
@@ -282,7 +278,6 @@ export class FileManagerService {
             let returnedData = await this.fileManagerRepository.readDocument();
 
             if (returnedData) {
-                //console.log(request.headers);
                 return response.render(
                     'results',
                     { data: returnedData }
@@ -294,5 +289,9 @@ export class FileManagerService {
             console.log(`Error details here: ${err}`);
         }
 
+    }
+
+    async isThereAnyRecordInDatabase(): Promise<boolean> {
+        return await this.fileManagerRepository.isThereAnyRecordInDatabase();
     }
 }

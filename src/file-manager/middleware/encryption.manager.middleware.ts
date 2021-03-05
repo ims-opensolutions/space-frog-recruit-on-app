@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/commo
 import { NextFunction } from "express";
 import * as config from '../config/config.json';
 import { Request, Response } from 'express';
+import * as request from 'supertest';
 
 
 @Injectable()
@@ -85,19 +86,25 @@ export class EncryptionManagerMiddleware implements NestMiddleware {
                 }
 
                 if (decryptedJSON.method === 'POST') {
-                    const uploadedFileArray = decryptedJSON.requestBody.raw;
-                    const uploadedFileKeys = uploadedFileArray.map(nestedObject => Object.keys(nestedObject)).flat();
-                                                            
-                    if (endpoint === 'render') {
-                        if (!uploadedFileKeys.includes('bytes')) {
-                            throw new UnauthorizedException('Unauthorized'); 
+
+                    if (Object.keys(decryptedJSON.requestBody).includes('ray')) {
+
+                        const uploadedFileArray = decryptedJSON.requestBody.raw;
+                        console.log(decryptedJSON.requestedBody);
+                        const uploadedFileKeys = uploadedFileArray.map(nestedObject => Object.keys(nestedObject)).flat();
+                                                                
+                        if (endpoint === 'render') {
+                            if (!uploadedFileKeys.includes('bytes')) {
+                                throw new UnauthorizedException('Unauthorized'); 
+                            }
+                        } else {
+                            if (!uploadedFileKeys.includes('bytes') || !uploadedFileKeys.includes('file')) {
+                                throw new UnauthorizedException('Unauthorized'); 
+                            }
                         }
-                    } else {
-                        if (!uploadedFileKeys.includes('bytes') || !uploadedFileKeys.includes('file')) {
-                            throw new UnauthorizedException('Unauthorized'); 
-                        }
+
                     }
-                    
+
                 }
 
                 next();
