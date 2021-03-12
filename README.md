@@ -4,10 +4,11 @@
   <img src="https://github.com/ims-opensolutions/space-frog-recruit-on-app/blob/master/logo/Recruit0n_big.jpg" width=500 alt="RecruitOn Logo" />
 </p>
 
-<p align="center">
-  
-<a href="" target="_blank"><img alt="company" src="https://img.shields.io/badge/version-1.0-brightgreen.svg?style=flat" /></a>
-
+<p align="center">  
+  <a href="" target="_blank"><img alt="version" src="https://img.shields.io/badge/version-1.0-brightgreen.svg?style=flat" /></a>
+  <a href="" target="_blank"><img alt="owner" src="https://img.shields.io/badge/owner-MKNA--dev-127ab5.svg?style=flat" /></a>
+  <a href="https://www.linkedin.com/in/iv%C3%A1n-miranda-stavenuiter-b40412b7/" target="_blank"><img alt="linkedin" src="https://img.shields.io/badge/social-LinkedIn-106494.svg?style=flat" /></a>
+  <a href="https://twitter.com/im_stavenuiter" target="_blank"><img alt="twitter" src="https://img.shields.io/twitter/follow/im_stavenuiter.svg?style=social&label=Follow" /></a>
 </p>
 
 <p align="center">A web application to handle and process an organization's candidates data</p>
