@@ -37,4 +37,7 @@ lerna-debug.log*
 /secrets
 
 # Cookie template
-#/files/cookie-value.json
+/files/cookie-value.json
+
+# Decrypt code
+/resources/decrypt-code.js
