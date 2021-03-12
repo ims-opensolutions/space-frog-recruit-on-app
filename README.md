@@ -44,6 +44,13 @@
 
 <p align="justify">Finally, <b>all the traffic is encrypted</b> even in development phase. This has been done with self-certified <b>https credentials</b> provided by Let's Encrypt.</p>
 
+## Running
+
+<p><code>npm install</code></p>
+<p><code>npm run start:dev</code></p>
+
+<p align="justify"><b>Server will throw an error if excel file doesn't comply certain rules.</b> Please, find a model template inside files folder to guide yourself.</p>
+
 ## Versions
 
 * <p>1.0</p>
