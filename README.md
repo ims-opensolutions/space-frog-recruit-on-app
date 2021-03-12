@@ -32,7 +32,7 @@
 
 <p align="justify">The core of the security RecruitOn engine has been finally set up throuhg <b>Chrome Web Request API</b>. In a simplified explanation, this API works by installing an extension on chrome, which intercepts any requests coming from the application. Next, it <b>encrypts a given payload</b> that is sent to the server in hexadecimal format, which will be responsible for decrypting this data and validating it.</p>
 
-<p align="justify">A <b>second security</b> layer has been configured through <b>short-live cookies</b>. These are triggered on onbeforeunload JavaScript native event, allowing the client to create them only when the next request is about to be launched. This shortens up the time the cookie is present in the browser. In addition, the lifetime of the cookie is just 2 seconds. Then, the browser purges it. To assure a background layer against potential CSRF attacks, <b>samesite</b> attribute is also set along the rest of the cookie properties.</p>
+<p align="justify">A <b>second security</b> layer has been configured through <b>short-live cookies</b>. These are triggered on onbeforeunload JavaScript native event, allowing the client to create them only when the next request is about to be launched. This shortens up the time the cookie is present in the browser. In addition, the lifetime of the cookie is just 2 seconds. Then, the browser purges it. To assure a background layer against potential CSRF attacks, <b>samesite</b> attribute is also set along the rest of the cookie properties. Cookie values are <b>base64 encoded</b>.</p>
 
 <p align="justify">Finally, <b>all the traffic is encrypted</b> even in development phase. This has been done with self-certified <b>https credentials</b> provided by Let's Encrypt.</p>
 
@@ -43,6 +43,12 @@
 ## Branches 
 
 * <p>Master</p>
+
+## Warnings
+
+* <p>Only running on <b>Chrome</b></p>
+* <p>Encryption takes place on chrome extension code. I encourage potential users of the app to <b>hide/obfuscate</b> the code to prevent security issues</p>
+* <p>Design <b>has not</b> been a priority. Serious CSS improvements can be introduced</p>
 
 ## License
 
