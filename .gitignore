@@ -35,3 +35,6 @@ lerna-debug.log*
 
 # Certs
 /secrets
+
+# Cookie template
+/files/cookie-value.json
