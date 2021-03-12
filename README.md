@@ -21,7 +21,7 @@
 
 ## Tools
 
-* <p><a href="https://developer.chrome.com/docs/extensions/reference/webRequest/" target="_blank">Chrome Web Request API</a></p>
+* <p><a href="https://developer.chrome.com/docs/extensions/reference/webRequest/">Chrome Web Request API</a></p>
 * <p><a href="https://developer.mozilla.org/es/docs/Web/API/History" target="_blank">JavaScript History API</a></p>
 * <p><a href="https://developer.mozilla.org/es/docs/Web/API/Web_Crypto_API" target="_blank">JavaScript Web Crypto API</a></p>
 * <p><a href="https://letsencrypt.org/docs/certificates-for-localhost/" target="_blank">Let's Encrypt certificates</a></p>
