@@ -8,39 +8,39 @@
 
 ## Description
 
-RecruitOn is a humble web application which aims to ease the process of handling, filtering and organizing potential candidates personal data. Target here is actually any organization or company that deals with recruiting processes (normally HHRR team). It works resorting on a simple UI which allows the user to upload an excel file. The logic behind the application process this data and shows it back to the client in a user-friendly way. 
+<p align="justify">RecruitOn is a humble web application which aims to ease the process of handling, filtering and organizing potential candidates personal data. Target here is actually any organization or company that deals with recruiting processes (normally HHRR team). It works resorting on a simple UI which allows the user to upload an excel file. The logic behind the application process this data and shows it back to the client in a user-friendly way. </p>
 
-The application offers some interesting functions. Among them, we have:
+<p align="justify">The application offers some interesting functions. Among them, we have:</p>
 
-* Filtering through different parameters: qualification, salary and location
-* Ubicate the candidate in a map
+* <p>Filtering through different parameters: qualification, salary and location</p>
+* <p>Ubicate the candidate in a map</p>
 
 ## Features
 
-Most important, remarkable feature regarding UX is a custom handling of browser navigation history
+<p align="justify">Most important, remarkable feature regarding UX is a custom handling of browser navigation history</p>
 
 ## Tools
 
-* Chrome Web Request API
-* JavaScript History API
-* JavaScript Web Crypto API
-* Let's Encrypt certificates
+* <p>Chrome Web Request API</p>
+* <p>JavaScript History API</p>
+* <p>JavaScript Web Crypto API</p>
+* <p>Let's Encrypt certificates</p>
 
 ## Security
 
-From its very early birth stage, RecruitOn was thought to be build and constructed in the most secure possible way, giving thus to this factor a top priority. For this to be achieved, a different approach from traditional user-password login mechanism was desired. The main goal was authenticating requestes made by RecruitOn, accepting only them and rejecting any other one coming from a different source. 
+<p align="justify">From its very early birth stage, RecruitOn was thought to be build and constructed in the most secure possible way, giving thus to this factor a top priority. For this to be achieved, a different approach from traditional user-password login mechanism was desired. The main goal was authenticating requestes made by RecruitOn, accepting only them and rejecting any other one coming from a different source.</p>
 
-The core of the security RecruitOn engine has been finally set up throuhg Chrome Web Request API. In a simplified explanation, this API works by installing an extension on chrome, which intercepts any requests coming from the application. Next, it encrypts a given payload that is sent to the server in hexadecimal format, which will be responsible for decrypting this data and validating it. 
+<p align="justify">The core of the security RecruitOn engine has been finally set up throuhg Chrome Web Request API. In a simplified explanation, this API works by installing an extension on chrome, which intercepts any requests coming from the application. Next, it encrypts a given payload that is sent to the server in hexadecimal format, which will be responsible for decrypting this data and validating it.</p>
 
-A second security layer has been configured through short-live cookies. These are triggered on onbeforeunload JavaScript native event, allowing the client to  create them only when the next request is about to be launched. This shortens up the time the cookie is present in the browser. In addition, the lifetime of the cookie is just 2 seconds. Then, it the browser purges it. To assure a background layer against potential CSRF attacks, samesite attribute is also set along the rest of the cookie properties.
+<p align="justify">A second security layer has been configured through short-live cookies. These are triggered on onbeforeunload JavaScript native event, allowing the client to  create them only when the next request is about to be launched. This shortens up the time the cookie is present in the browser. In addition, the lifetime of the cookie is just 2 seconds. Then, it the browser purges it. To assure a background layer against potential CSRF attacks, samesite attribute is also set along the rest of the cookie properties.</p>
 
-Finally, all the traffic is encrypted even in development phase. This has been done with self-certified https credentials provided by Let's Encrypt.
+<p align="justify">Finally, all the traffic is encrypted even in development phase. This has been done with self-certified https credentials provided by Let's Encrypt.</p>
 
 ## Versions
 
-* 1.0
+* <p>1.0</p>
 
 ## License
 
-All rights reserved to MKNA security software development.
+<p align="justify">All rights reserved to MKNA security software development.</p>
 
