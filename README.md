@@ -4,6 +4,12 @@
   <img src="https://github.com/ims-opensolutions/space-frog-recruit-on-app/blob/master/logo/Recruit0n_big.jpg" width=500 alt="RecruitOn Logo" />
 </p>
 
+<p align="center">
+  
+<a href="" target="_blank"><img alt="company" src="https://img.shields.io/badge/version-1.0-brightgreen.svg?style=flat" /></a>
+
+</p>
+
 <p align="center">A web application to handle and process an organization's candidates data</p>
 
 ## Description
