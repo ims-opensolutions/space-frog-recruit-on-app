@@ -25,6 +25,7 @@
 * <p><a href="https://developer.mozilla.org/es/docs/Web/API/History" target="_blank">JavaScript History API</a></p>
 * <p><a href="https://developer.mozilla.org/es/docs/Web/API/Web_Crypto_API" target="_blank">JavaScript Web Crypto API</a></p>
 * <p><a href="https://letsencrypt.org/docs/certificates-for-localhost/" target="_blank">Let's Encrypt certificates</a></p>
+* <p><a href="https://nestjs.com/" target="_blank">NestJS</a></p>
 
 ## Security
 
